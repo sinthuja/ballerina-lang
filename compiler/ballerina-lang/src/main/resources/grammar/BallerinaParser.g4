@@ -247,6 +247,7 @@ builtInReferenceTypeName
     |   TYPE_XML
     |   TYPE_JSON
     |   TYPE_TABLE LT typeName GT
+    |   TYPE_STREAM LT typeName GT
     |   TYPE_DESC LT typeName GT
     |   SERVICE
     |   errorTypeName
@@ -783,6 +784,7 @@ expression
     |   LARROW peerWorker (COMMA expression)?                               # workerReceiveExpression
     |   flushWorker                                                         # flushWorkerExpression
     |   typeDescExpr                                                        # typeAccessExpression
+    |   queryExpr                                                           # queryExpression
     ;
 
 constantExpression
@@ -817,6 +819,26 @@ shiftExpression
     ;
 
 shiftExprPredicate : {_input.get(_input.index() -1).getType() != WS}? ;
+
+selectClause
+    :   SELECT expression
+    ;
+
+whereClause
+    :   WHERE expression
+    ;
+
+fromClause
+    :   FROM (typeName | VAR) bindingPattern IN expression
+    ;
+
+queryPipeline
+    :   fromClause (fromClause | whereClause)*
+    ;
+
+queryExpr
+    :   queryPipeline selectClause
+    ;
 
 //reusable productions
 
@@ -1121,6 +1143,7 @@ documentationIdentifier
     |   TYPE_JSON
     |   TYPE_XML
     |   TYPE_TABLE
+    |   TYPE_STREAM
     |   TYPE_ANY
     |   TYPE_DESC
     |   TYPE_FUTURE

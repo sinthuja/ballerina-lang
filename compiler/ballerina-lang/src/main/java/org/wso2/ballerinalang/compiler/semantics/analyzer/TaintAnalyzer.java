@@ -77,6 +77,7 @@ import org.wso2.ballerinalang.compiler.tree.expressions.BLangListConstructorExpr
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangLiteral;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangMatchExpression;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangNamedArgsExpression;
+import org.wso2.ballerinalang.compiler.tree.expressions.BLangQueryExpr;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordLiteral;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRestArgsExpression;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangServiceConstructorExpr;
@@ -1063,10 +1064,11 @@ public class TaintAnalyzer extends BLangNodeVisitor {
             }
         }
 
-        // If this is an object init using the default constructor, or a channel initialization then skip the
+        // If this is an object init using the default constructor, or a stream or channel initialization then skip the
         // taint checking.
-        if (typeInit.type.tag != TypeTags.OBJECT ||
-                         ((BObjectTypeSymbol) typeInit.type.tsymbol).initializerFunc != null) {
+        if (typeInit.type.tag != TypeTags.STREAM &&
+                (typeInit.type.tag != TypeTags.OBJECT ||
+                         ((BObjectTypeSymbol) typeInit.type.tsymbol).initializerFunc != null)) {
             typeInit.initInvocation.accept(this);
         }
 
@@ -1503,6 +1505,10 @@ public class TaintAnalyzer extends BLangNodeVisitor {
         /* ignore */
     }
 
+    @Override
+    public void visit(BLangQueryExpr queryExpr) {
+        /* ignore */
+    }
 
     @Override
     public void visit(BLangXMLNS.BLangLocalXMLNS xmlnsNode) {

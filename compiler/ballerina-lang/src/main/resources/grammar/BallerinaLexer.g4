@@ -2,6 +2,7 @@ lexer grammar BallerinaLexer;
 
 @members {
     boolean inStringTemplate = false;
+    boolean inQueryExpression = false;
 }
 
 // Reserved words
@@ -45,6 +46,7 @@ TYPE_MAP        : 'map' ;
 TYPE_JSON       : 'json' ;
 TYPE_XML        : 'xml' ;
 TYPE_TABLE      : 'table' ;
+TYPE_STREAM     : 'stream' ;
 TYPE_ANY        : 'any' ;
 TYPE_DESC       : 'typedesc' ;
 TYPE            : 'type' ;
@@ -93,6 +95,9 @@ IS          : 'is' ;
 FLUSH       : 'flush' ;
 WAIT        : 'wait' ;
 DEFAULT     : 'default' ;
+FROM        : 'from' { inQueryExpression = true; } ;
+SELECT      : {inQueryExpression}? 'select' { inQueryExpression = false; } ;
+WHERE       : {inQueryExpression}? 'where' ;
 
 // Separators
 
