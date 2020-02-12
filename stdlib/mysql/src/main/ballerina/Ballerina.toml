@@ -6,8 +6,8 @@ version = "0.0.0"
 target = "java8"
 
     [[platform.libraries]]
-    artifactId = "jdbc2"
+    artifactId = "mysql"
     version = "@project.version@"
-    path = "./lib/ballerina-jdbc2-@project.version@.jar"
+    path = "./lib/ballerina-mysql-@project.version@.jar"
     groupId = "ballerina"
-    modules = ["jdbc2"]
+    modules = ["mysql"]
