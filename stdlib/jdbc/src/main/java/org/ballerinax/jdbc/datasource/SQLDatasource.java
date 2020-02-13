@@ -157,7 +157,7 @@ public class SQLDatasource {
                     dataSourceClassName = getXADatasourceClassName(sqlDatasourceParams.dbType,
                             sqlDatasourceParams.jdbcUrl, sqlDatasourceParams.username, sqlDatasourceParams.password);
                 }
-                if (!dataSourceClassName.isEmpty()) {
+                if (dataSourceClassName != null && !dataSourceClassName.isEmpty()) {
                     config.setDataSourceClassName(dataSourceClassName);
                     if (sqlDatasourceParams.dbOptionsMap == null || !sqlDatasourceParams.dbOptionsMap
                             .containsKey(Constants.URL)) {
@@ -260,54 +260,54 @@ public class SQLDatasource {
             throws PanickingApplicationException, PanickingDatabaseException {
         String xaDataSource = null;
         switch (dbType) {
-        case Constants.DBTypes.MYSQL:
-            int driverMajorVersion;
-            try (Connection conn = DriverManager.getConnection(url, userName, password)) {
-                driverMajorVersion = conn.getMetaData().getDriverMajorVersion();
-                if (driverMajorVersion == 5) {
-                    xaDataSource = Constants.XADataSources.MYSQL_5_XA_DATASOURCE;
-                } else if (driverMajorVersion > 5) {
-                    xaDataSource = Constants.XADataSources.MYSQL_6_XA_DATASOURCE;
+            case Constants.DBTypes.MYSQL:
+                int driverMajorVersion;
+                try (Connection conn = DriverManager.getConnection(url, userName, password)) {
+                    driverMajorVersion = conn.getMetaData().getDriverMajorVersion();
+                    if (driverMajorVersion == 5) {
+                        xaDataSource = Constants.XADataSources.MYSQL_5_XA_DATASOURCE;
+                    } else if (driverMajorVersion > 5) {
+                        xaDataSource = Constants.XADataSources.MYSQL_6_XA_DATASOURCE;
+                    }
+                } catch (SQLException e) {
+                    throw new PanickingDatabaseException("error while obtaining the connection for "
+                            + Constants.CONNECTOR_NAME + ": ", e);
                 }
-            } catch (SQLException e) {
-                throw new PanickingDatabaseException("error while obtaining the connection for "
-                        + Constants.CONNECTOR_NAME + ": ", e);
-            }
-            break;
-        case Constants.DBTypes.SQLSERVER:
-            xaDataSource = Constants.XADataSources.SQLSERVER_XA_DATASOURCE;
-            break;
-        case Constants.DBTypes.ORACLE:
-            xaDataSource = Constants.XADataSources.ORACLE_XA_DATASOURCE;
-            break;
-        case Constants.DBTypes.SYBASE:
-            xaDataSource = Constants.XADataSources.SYBASE_XA_DATASOURCE;
-            break;
-        case Constants.DBTypes.POSTGRESQL:
-            xaDataSource = Constants.XADataSources.POSTGRES_XA_DATASOURCE;
-            break;
-        case Constants.DBTypes.IBMDB2:
-            xaDataSource = Constants.XADataSources.IBMDB2_XA_DATASOURCE;
-            break;
-        case Constants.DBTypes.HSQLDB:
-        case Constants.DBTypes.HSQLDB_SERVER:
-        case Constants.DBTypes.HSQLDB_FILE:
-            xaDataSource = Constants.XADataSources.HSQLDB_XA_DATASOURCE;
-            break;
-        case Constants.DBTypes.H2:
-        case Constants.DBTypes.H2_SERVER:
-        case Constants.DBTypes.H2_FILE:
-        case Constants.DBTypes.H2_MEMORY:
-            xaDataSource = Constants.XADataSources.H2_XA_DATASOURCE;
-            break;
-        case Constants.DBTypes.DERBY_SERVER:
-            xaDataSource = Constants.XADataSources.DERBY_SERVER_XA_DATASOURCE;
-            break;
-        case Constants.DBTypes.DERBY_FILE:
-            xaDataSource = Constants.XADataSources.DERBY_FILE_XA_DATASOURCE;
-            break;
-        default:
-            throw new PanickingApplicationException("unknown database type " + dbType + " used for xa connection");
+                break;
+            case Constants.DBTypes.SQLSERVER:
+                xaDataSource = Constants.XADataSources.SQLSERVER_XA_DATASOURCE;
+                break;
+            case Constants.DBTypes.ORACLE:
+                xaDataSource = Constants.XADataSources.ORACLE_XA_DATASOURCE;
+                break;
+            case Constants.DBTypes.SYBASE:
+                xaDataSource = Constants.XADataSources.SYBASE_XA_DATASOURCE;
+                break;
+            case Constants.DBTypes.POSTGRESQL:
+                xaDataSource = Constants.XADataSources.POSTGRES_XA_DATASOURCE;
+                break;
+            case Constants.DBTypes.IBMDB2:
+                xaDataSource = Constants.XADataSources.IBMDB2_XA_DATASOURCE;
+                break;
+            case Constants.DBTypes.HSQLDB:
+            case Constants.DBTypes.HSQLDB_SERVER:
+            case Constants.DBTypes.HSQLDB_FILE:
+                xaDataSource = Constants.XADataSources.HSQLDB_XA_DATASOURCE;
+                break;
+            case Constants.DBTypes.H2:
+            case Constants.DBTypes.H2_SERVER:
+            case Constants.DBTypes.H2_FILE:
+            case Constants.DBTypes.H2_MEMORY:
+                xaDataSource = Constants.XADataSources.H2_XA_DATASOURCE;
+                break;
+            case Constants.DBTypes.DERBY_SERVER:
+                xaDataSource = Constants.XADataSources.DERBY_SERVER_XA_DATASOURCE;
+                break;
+            case Constants.DBTypes.DERBY_FILE:
+                xaDataSource = Constants.XADataSources.DERBY_FILE_XA_DATASOURCE;
+                break;
+            default:
+                throw new PanickingApplicationException("unknown database type " + dbType + " used for xa connection");
         }
         return xaDataSource;
     }

@@ -15,6 +15,7 @@
 
 import ballerina/transactions;
 import ballerinax/java.jdbc;
+import ballerinax/java.sql;
 
 type ResultCount record {
     int COUNTVAL;
@@ -202,20 +203,20 @@ function testLocalTransactionBatchUpdate(string jdbcURL) returns @tainted [int, 
     int count;
 
     //Batch 1
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_VARCHAR, value: "Alex"};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_VARCHAR, value: "Smith"};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_INTEGER, value: 611};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DOUBLE, value: 3400.5};
-    jdbc:Parameter para5 = {sqlType: jdbc:TYPE_VARCHAR, value: "Colombo"};
-    jdbc:Parameter?[] parameters1 = [para1, para2, para3, para4, para5];
+    sql:Parameter para1 = {sqlType: sql:TYPE_VARCHAR, value: "Alex"};
+    sql:Parameter para2 = {sqlType: sql:TYPE_VARCHAR, value: "Smith"};
+    sql:Parameter para3 = {sqlType: sql:TYPE_INTEGER, value: 611};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DOUBLE, value: 3400.5};
+    sql:Parameter para5 = {sqlType: sql:TYPE_VARCHAR, value: "Colombo"};
+    sql:Parameter?[] parameters1 = [para1, para2, para3, para4, para5];
 
     //Batch 2
-    para1 = {sqlType: jdbc:TYPE_VARCHAR, value: "Alex"};
-    para2 = {sqlType: jdbc:TYPE_VARCHAR, value: "Smith"};
-    para3 = {sqlType: jdbc:TYPE_INTEGER, value: 611};
-    para4 = {sqlType: jdbc:TYPE_DOUBLE, value: 3400.5};
-    para5 = {sqlType: jdbc:TYPE_VARCHAR, value: "Colombo"};
-    jdbc:Parameter?[] parameters2 = [para1, para2, para3, para4, para5];
+    para1 = {sqlType: sql:TYPE_VARCHAR, value: "Alex"};
+    para2 = {sqlType: sql:TYPE_VARCHAR, value: "Smith"};
+    para3 = {sqlType: sql:TYPE_INTEGER, value: 611};
+    para4 = {sqlType: sql:TYPE_DOUBLE, value: 3400.5};
+    para5 = {sqlType: sql:TYPE_VARCHAR, value: "Colombo"};
+    sql:Parameter?[] parameters2 = [para1, para2, para3, para4, para5];
 
     transaction {
         var e1 = testDB->batchUpdate("Insert into Customers " +
@@ -244,20 +245,20 @@ function testLocalTransactionRollbackBatchUpdate(string jdbcURL) returns @tainte
     int count;
 
     //Batch 1
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_VARCHAR, value: "Alex"};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_VARCHAR, value: "Smith"};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_INTEGER, value: 612};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DOUBLE, value: 3400.5};
-    jdbc:Parameter para5 = {sqlType: jdbc:TYPE_VARCHAR, value: "Colombo"};
-    jdbc:Parameter?[] parameters1 = [para1, para2, para3, para4, para5];
+    sql:Parameter para1 = {sqlType: sql:TYPE_VARCHAR, value: "Alex"};
+    sql:Parameter para2 = {sqlType: sql:TYPE_VARCHAR, value: "Smith"};
+    sql:Parameter para3 = {sqlType: sql:TYPE_INTEGER, value: 612};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DOUBLE, value: 3400.5};
+    sql:Parameter para5 = {sqlType: sql:TYPE_VARCHAR, value: "Colombo"};
+    sql:Parameter?[] parameters1 = [para1, para2, para3, para4, para5];
 
     //Batch 2
-    para1 = {sqlType: jdbc:TYPE_VARCHAR, value: "Alex"};
-    para2 = {sqlType: jdbc:TYPE_VARCHAR, value: "Smith"};
-    para3 = {sqlType: jdbc:TYPE_INTEGER, value: 612};
-    para4 = {sqlType: jdbc:TYPE_DOUBLE, value: 3400.5};
-    para5 = {sqlType: jdbc:TYPE_VARCHAR, value: "Colombo"};
-    jdbc:Parameter?[] parameters2 = [para1, para2, para3, para4, para5];
+    para1 = {sqlType: sql:TYPE_VARCHAR, value: "Alex"};
+    para2 = {sqlType: sql:TYPE_VARCHAR, value: "Smith"};
+    para3 = {sqlType: sql:TYPE_INTEGER, value: 612};
+    para4 = {sqlType: sql:TYPE_DOUBLE, value: 3400.5};
+    para5 = {sqlType: sql:TYPE_VARCHAR, value: "Colombo"};
+    sql:Parameter?[] parameters2 = [para1, para2, para3, para4, para5];
 
     transaction {
         var e1 = testDB->batchUpdate("Insert into Customers " +

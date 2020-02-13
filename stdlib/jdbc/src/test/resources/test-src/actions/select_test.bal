@@ -14,6 +14,7 @@
 // under the License.
 
 import ballerinax/java.jdbc;
+import ballerinax/java.sql;
 
 string jdbcUserName = "SA";
 string jdbcPassword = "";
@@ -104,17 +105,17 @@ function testSelectNumericDataWithDBError(string jdbcURL) returns [boolean, bool
     if (result is error) {
         matchedToError = true;
     }
-    if (result is jdbc:Error) {
+    if (result is sql:Error) {
         matchedToJdbcError = true;
     }
-    if (result is jdbc:DatabaseError) {
+    if (result is sql:DatabaseError) {
         matchedToDBError = true;
         message = <@untainted><string>result.detail()["message"];
         state = <@untainted>result.detail()["sqlState"];
         reason = <@untainted>result.reason();
         errorCode = <@untainted>result.detail()["sqlErrorCode"];
     }
-    if (result is jdbc:ApplicationError) {
+    if (result is sql:ApplicationError) {
         matchedToApplicaitonError = true;
     }
 
@@ -135,7 +136,7 @@ function testSelectNumericDataWithApplicationError(string jdbcURL) returns [bool
     xml x1 = xml `<fname>John</fname>`;
     xml x2 = xml `<fname>Jane</fname>`;
     xml[] xmlData = [x1, x2];
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_INTEGER, value: xmlData};
+    sql:Parameter para1 = {sqlType: sql:TYPE_INTEGER, value: xmlData};
     var result = testDB->select("SELECT * from NumericTypes where id in (?)", (), para1);
     boolean matchedToError = false;
     boolean matchedToJdbcError = false;
@@ -147,13 +148,13 @@ function testSelectNumericDataWithApplicationError(string jdbcURL) returns [bool
     if (result is error) {
         matchedToError = true;
     }
-    if (result is jdbc:Error) {
+    if (result is sql:Error) {
         matchedToJdbcError = true;
     }
-    if (result is jdbc:DatabaseError) {
+    if (result is sql:DatabaseError) {
         matchedToDBError = true;
     }
-    if (result is jdbc:ApplicationError) {
+    if (result is sql:ApplicationError) {
         matchedToApplicaitonError = true;
         reason = <@untainted>result.reason();
         message = <@untainted><string>result.detail()["message"];
@@ -176,11 +177,11 @@ function testArrayOfQueryParameters(string jdbcURL) returns string {
     string[] stringDataArray = ["A", "B"];
     float[] doubleArray = [233.4, 433.4];
     decimal[] decimalArray = [1233.4d, 1433.4d];
-    jdbc:Parameter para0 = {sqlType: jdbc:TYPE_VARCHAR, value: "Johhhn"};
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_INTEGER, value: intDataArray};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_VARCHAR, value: stringDataArray};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_DOUBLE, value: doubleArray};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DOUBLE, value: decimalArray};
+    sql:Parameter para0 = {sqlType: sql:TYPE_VARCHAR, value: "Johhhn"};
+    sql:Parameter para1 = {sqlType: sql:TYPE_INTEGER, value: intDataArray};
+    sql:Parameter para2 = {sqlType: sql:TYPE_VARCHAR, value: stringDataArray};
+    sql:Parameter para3 = {sqlType: sql:TYPE_DOUBLE, value: doubleArray};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DOUBLE, value: decimalArray};
 
     var dt = testDB->select("SELECT  FirstName from Customers where FirstName = ? or lastName = 'A' or " +
         "lastName = '\"BB\"' or registrationID in(?) or lastName in(?) or creditLimit in(?) or creditLimit in (?)",
@@ -211,8 +212,8 @@ function testBoolArrayOfQueryParameters(string jdbcURL) returns string {
 
     string[] stringDataArray = ["John", "Anne", "Peter"];
 
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_BOOLEAN, value: boolDataArray};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_VARCHAR, value: stringDataArray};
+    sql:Parameter para1 = {sqlType: sql:TYPE_BOOLEAN, value: boolDataArray};
+    sql:Parameter para2 = {sqlType: sql:TYPE_VARCHAR, value: stringDataArray};
 
     var dt = testDB->select("SELECT firstName from Customers where customerId = ? and visaAccepted in(?) and " +
         "firstName in (?)", ResultCustomers, 1, para1, para2);
@@ -245,7 +246,7 @@ function testBlobArrayOfQueryParameter(string jdbcURL) returns string {
     }
     byte[][] blobDataArray = [blobData, blobData];
 
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_BLOB, value: blobDataArray};
+    sql:Parameter para1 = {sqlType: sql:TYPE_BLOB, value: blobDataArray};
 
     var dt = testDB->select("SELECT firstName from Customers where customerId = ? and info in (?)", ResultCustomers, 1,
         para1);

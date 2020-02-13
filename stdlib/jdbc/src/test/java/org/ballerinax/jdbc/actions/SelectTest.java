@@ -78,7 +78,7 @@ public class SelectTest {
         Assert.assertFalse(((BBoolean) returns[3]).booleanValue());
         Assert.assertTrue(returns[4].stringValue().contains("failed to execute select query:"));
         Assert.assertEquals(returns[5].stringValue(), "42501");
-        Assert.assertEquals(returns[6].stringValue(), "{ballerinax/java.jdbc}DatabaseError");
+        Assert.assertEquals(returns[6].stringValue(), "{ballerinax/java.sql}DatabaseError");
         Assert.assertEquals(((BInteger) returns[7]).intValue(), -5501);
     }
 
@@ -89,7 +89,7 @@ public class SelectTest {
         Assert.assertTrue(((BBoolean) returns[1]).booleanValue());
         Assert.assertFalse(((BBoolean) returns[2]).booleanValue());
         Assert.assertTrue(((BBoolean) returns[3]).booleanValue());
-        Assert.assertEquals(returns[4].stringValue(), "{ballerinax/java.jdbc}ApplicationError");
+        Assert.assertEquals(returns[4].stringValue(), "{ballerinax/java.sql}ApplicationError");
         Assert.assertTrue(
                 returns[5].stringValue().contains("unsupported array type specified as a parameter at index 0"));
     }

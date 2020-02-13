@@ -175,8 +175,7 @@ public final class Constants {
     public static final String USER = "user";
     public static final String PASSWORD = "password";
 
-    public static final String JDBC_PACKAGE_PATH = "ballerinax" + ORG_NAME_SEPARATOR + "java_jdbc";
-    public static final BPackage JDBC_PACKAGE_ID = new BPackage("ballerinax", "java.jdbc", "0.0.0");
+    public static final BPackage SQL_PACKAGE_ID = new BPackage("ballerinax", "java.sql", "0.0.0");
     public static final String SQL_PARAMETER = "Parameter";
     public static final String JDBC_CLIENT = "Client";
     public static final String JDBC_UPDATE_RESULT = "UpdateResult";
@@ -187,8 +186,8 @@ public final class Constants {
     public static final String DATABASE_ERROR_DATA_RECORD_NAME = "DatabaseErrorData";
     public static final String APPLICATION_ERROR_MESSAGE = "Application Error Occurred";
     public static final String DATABASE_ERROR_MESSAGE = "Database Error Occurred";
-    public static final String APPLICATION_ERROR_CODE = "{ballerinax/java.jdbc}ApplicationError";
-    public static final String DATABASE_ERROR_CODE = "{ballerinax/java.jdbc}DatabaseError";
+    public static final String APPLICATION_ERROR_CODE = "{ballerinax/java.sql}ApplicationError";
+    public static final String DATABASE_ERROR_CODE = "{ballerinax/java.sql}DatabaseError";
 
     public static final String PARAMETER_SQL_TYPE_FIELD = "sqlType";
     public static final String PARAMETER_VALUE_FIELD = "value";

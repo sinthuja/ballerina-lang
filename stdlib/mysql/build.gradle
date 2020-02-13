@@ -30,9 +30,10 @@ dependencies {
     baloImplementation project(path: ':ballerina-jdbc', configuration: 'baloImplementation')
     baloImplementation project(path: ':ballerina-crypto', configuration: 'baloImplementation')
 
-//    interopImports project(':ballerina-io')
-//    interopImports project(':ballerina-system')
-//    interopImports project(':ballerina-config-api')
+    interopImports project(':ballerina-time')
+    interopImports project(':ballerina-crypto')
+    interopImports project(':ballerina-config-api')
+    interopImports project(':ballerina-jdbc')
 
     baloCreat project(':lib-creator')
     

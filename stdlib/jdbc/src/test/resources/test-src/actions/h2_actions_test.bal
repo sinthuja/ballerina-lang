@@ -16,6 +16,7 @@
 import ballerina/io;
 import ballerina/jsonutils;
 import ballerinax/java.jdbc;
+import ballerinax/java.sql;
 
 public type Customer record {
     int customerId;
@@ -63,7 +64,7 @@ function testUpdate(string jdbcURL) returns int {
     var insertCountRet = testDB->update("insert into Customers (customerId, name, creditLimit, country)" +
                                 "values (15, 'Anne', 1000, 'UK')");
     int insertCount = 0;
-    if (insertCountRet is jdbc:UpdateResult) {
+    if (insertCountRet is sql:UpdateResult) {
         insertCount = insertCountRet.updatedRowCount;
     }
     checkpanic testDB.stop();
@@ -113,7 +114,7 @@ function testGeneratedKeyOnInsert(string jdbcURL) returns string | int {
 
     var x = testDB->update("insert into Customers (name, creditLimit,country) values ('Sam', 1200, 'USA')");
 
-    if (x is jdbc:UpdateResult) {
+    if (x is sql:UpdateResult) {
         returnVal = x.updatedRowCount;
     } else {
         error e = x;
@@ -135,20 +136,20 @@ function testBatchUpdate(string jdbcURL) returns int[] {
     int[] updateCount;
     string returnVal;
     //Batch 1
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_INTEGER, value: 10};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_VARCHAR, value: "Smith"};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_DOUBLE, value: 3400.5};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_VARCHAR, value: "Australia"};
-    jdbc:Parameter?[] parameters1 = [para1, para2, para3, para4];
+    sql:Parameter para1 = {sqlType: sql:TYPE_INTEGER, value: 10};
+    sql:Parameter para2 = {sqlType: sql:TYPE_VARCHAR, value: "Smith"};
+    sql:Parameter para3 = {sqlType: sql:TYPE_DOUBLE, value: 3400.5};
+    sql:Parameter para4 = {sqlType: sql:TYPE_VARCHAR, value: "Australia"};
+    sql:Parameter?[] parameters1 = [para1, para2, para3, para4];
 
     //Batch 2
-    jdbc:Parameter para5 = {sqlType: jdbc:TYPE_INTEGER, value: 11};
-    jdbc:Parameter para6 = {sqlType: jdbc:TYPE_VARCHAR, value: "John"};
-    jdbc:Parameter para7 = {sqlType: jdbc:TYPE_DOUBLE, value: 3400.2};
-    jdbc:Parameter para8 = {sqlType: jdbc:TYPE_VARCHAR, value: "UK"};
-    jdbc:Parameter?[] parameters2 = [para5, para6, para7, para8];
+    sql:Parameter para5 = {sqlType: sql:TYPE_INTEGER, value: 11};
+    sql:Parameter para6 = {sqlType: sql:TYPE_VARCHAR, value: "John"};
+    sql:Parameter para7 = {sqlType: sql:TYPE_DOUBLE, value: 3400.2};
+    sql:Parameter para8 = {sqlType: sql:TYPE_VARCHAR, value: "UK"};
+    sql:Parameter?[] parameters2 = [para5, para6, para7, para8];
 
-    jdbc:BatchUpdateResult x = testDB->batchUpdate("Insert into Customers values (?,?,?,?)", false, parameters1, parameters2);
+    sql:BatchUpdateResult x = testDB->batchUpdate("Insert into Customers values (?,?,?,?)", false, parameters1, parameters2);
     checkpanic testDB.stop();
     return x.updatedRowCount;
 }
@@ -167,7 +168,7 @@ function testUpdateInMemory(string jdbcURL) returns @tainted [int, string] {
     var insertCountRet = testDB->update("insert into Customers2 (customerId, name, creditLimit, country) " +
                                 "values (15, 'Anne', 1000, 'UK')");
     int insertCount = 0;
-    if (insertCountRet is jdbc:UpdateResult) {
+    if (insertCountRet is sql:UpdateResult) {
         insertCount = insertCountRet.updatedRowCount;
     }
 
@@ -276,7 +277,7 @@ function testH2MemDBUpdate() returns [int, string] {
         data = io:sprintf("%s", j.toJsonString());
     }
     int insertCount = 0;
-    if (insertCountRet is jdbc:UpdateResult) {
+    if (insertCountRet is sql:UpdateResult) {
         insertCount = insertCountRet.updatedRowCount;
     }
     checkpanic testDB.stop();

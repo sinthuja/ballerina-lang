@@ -16,6 +16,7 @@
 
 import ballerina/time;
 import ballerinax/java.jdbc;
+import ballerinax/java.sql;
 
 type ResultDatesWithNillableStringType record {
     string? DATE_TYPE;
@@ -215,11 +216,11 @@ function testMappingDatesToNillableTimeType(string jdbcURL) returns @tainted [in
     timestampInserted = timestampStruct.time;
     datetimeInserted = datetimeStruct.time;
 
-    jdbc:Parameter para0 = {sqlType: jdbc:TYPE_INTEGER, value: 150};
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_DATE, value: dateStruct};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_TIME, value: timeStruct};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_TIMESTAMP, value: timestampStruct};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DATETIME, value: datetimeStruct};
+    sql:Parameter para0 = {sqlType: sql:TYPE_INTEGER, value: 150};
+    sql:Parameter para1 = {sqlType: sql:TYPE_DATE, value: dateStruct};
+    sql:Parameter para2 = {sqlType: sql:TYPE_TIME, value: timeStruct};
+    sql:Parameter para3 = {sqlType: sql:TYPE_TIMESTAMP, value: timestampStruct};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DATETIME, value: datetimeStruct};
 
     _ = checkpanic testDB->update("Insert into DateTimeTypes " +
         "(row_id, date_type, time_type, timestamp_type, datetime_type) values (?,?,?,?,?)",
@@ -257,11 +258,11 @@ function testMappingDatesToNillableIntType(int datein, int timein, int timestamp
         poolOptions: {maximumPoolSize: 1}
     });
 
-    jdbc:Parameter para0 = {sqlType: jdbc:TYPE_INTEGER, value: 151};
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_DATE, value: datein};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_TIME, value: timein};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_TIMESTAMP, value: timestampin};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DATETIME, value: timestampin};
+    sql:Parameter para0 = {sqlType: sql:TYPE_INTEGER, value: 151};
+    sql:Parameter para1 = {sqlType: sql:TYPE_DATE, value: datein};
+    sql:Parameter para2 = {sqlType: sql:TYPE_TIME, value: timein};
+    sql:Parameter para3 = {sqlType: sql:TYPE_TIMESTAMP, value: timestampin};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DATETIME, value: timestampin};
 
     int date = -1;
     int time = -1;
@@ -301,11 +302,11 @@ function testMappingDatesToNillableStringType(int datein, int timein, int timest
     string timestamp = "";
     string datetime = "";
 
-    jdbc:Parameter para0 = {sqlType: jdbc:TYPE_INTEGER, value: 152};
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_DATE, value: datein};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_TIME, value: timein};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_TIMESTAMP, value: timestampin};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DATETIME, value: timestampin};
+    sql:Parameter para0 = {sqlType: sql:TYPE_INTEGER, value: 152};
+    sql:Parameter para1 = {sqlType: sql:TYPE_DATE, value: datein};
+    sql:Parameter para2 = {sqlType: sql:TYPE_TIME, value: timein};
+    sql:Parameter para3 = {sqlType: sql:TYPE_TIMESTAMP, value: timestampin};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DATETIME, value: timestampin};
 
     _ = checkpanic testDB->update("Insert into DateTimeTypes " +
         "(row_id, date_type, time_type, timestamp_type, datetime_type) values (?,?,?,?,?)",

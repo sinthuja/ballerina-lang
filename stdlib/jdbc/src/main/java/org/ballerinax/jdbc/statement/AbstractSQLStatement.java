@@ -87,7 +87,7 @@ import static org.ballerinax.jdbc.Constants.PARAMETER_VALUE_FIELD;
 public abstract class AbstractSQLStatement implements SQLStatement {
 
     private static final BType SQL_PARAMETER_TYPE =
-            BallerinaValues.createRecordValue(Constants.JDBC_PACKAGE_ID, Constants.SQL_PARAMETER).getType();
+            BallerinaValues.createRecordValue(Constants.SQL_PACKAGE_ID, Constants.SQL_PARAMETER).getType();
     Calendar utcCalendar = Calendar.getInstance(TimeZone.getTimeZone(Constants.TIMEZONE_UTC));
     Strand strand;
 
@@ -300,7 +300,7 @@ public abstract class AbstractSQLStatement implements SQLStatement {
     }
 
     private MapValue<String, Object> getSQLParameter() {
-        return BallerinaValues.createRecordValue(Constants.JDBC_PACKAGE_ID, Constants.SQL_PARAMETER);
+        return BallerinaValues.createRecordValue(Constants.SQL_PACKAGE_ID, Constants.SQL_PARAMETER);
     }
 
     /**

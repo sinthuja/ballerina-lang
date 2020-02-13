@@ -19,6 +19,7 @@ import ballerina/time;
 import ballerina/xmlutils;
 import ballerina/jsonutils;
 import ballerinax/java.jdbc;
+import ballerinax/java.sql;
 
 type ResultPrimitive record {
     int INT_TYPE;
@@ -536,12 +537,12 @@ function testArrayDataInsertAndPrint(string jdbcURL) returns @tainted [int, int,
     string[] datastring = ["hello", "world"];
     boolean[] databoolean = [true, false, false, true, true];
 
-    jdbc:Parameter paraID = {sqlType: jdbc:TYPE_INTEGER, value: 4};
-    jdbc:Parameter paraInt = {sqlType: jdbc:TYPE_ARRAY, value: dataint};
-    jdbc:Parameter paraLong = {sqlType: jdbc:TYPE_ARRAY, value: dataint};
-    jdbc:Parameter paraFloat = {sqlType: jdbc:TYPE_ARRAY, value: datafloat};
-    jdbc:Parameter paraString = {sqlType: jdbc:TYPE_ARRAY, value: datastring};
-    jdbc:Parameter paraBool = {sqlType: jdbc:TYPE_ARRAY, value: databoolean};
+    sql:Parameter paraID = {sqlType: sql:TYPE_INTEGER, value: 4};
+    sql:Parameter paraInt = {sqlType: sql:TYPE_ARRAY, value: dataint};
+    sql:Parameter paraLong = {sqlType: sql:TYPE_ARRAY, value: dataint};
+    sql:Parameter paraFloat = {sqlType: sql:TYPE_ARRAY, value: datafloat};
+    sql:Parameter paraString = {sqlType: sql:TYPE_ARRAY, value: datastring};
+    sql:Parameter paraBool = {sqlType: sql:TYPE_ARRAY, value: databoolean};
 
     int intArrLen = -1;
     int longArrLen = -1;
@@ -553,7 +554,7 @@ function testArrayDataInsertAndPrint(string jdbcURL) returns @tainted [int, int,
                                 "string_array, boolean_array) values (?,?,?,?,?,?)",
     paraID, paraInt, paraLong, paraFloat, paraString, paraBool);
     int updatedCount = -1;
-    if (updateRet is jdbc:UpdateResult) {
+    if (updateRet is sql:UpdateResult) {
         updatedCount = updateRet.updatedRowCount;
     } else {
         error e = updateRet;
@@ -592,11 +593,11 @@ function testDateTime(int datein, int timein, int timestampin, string jdbcURL) r
     string timestamp = "";
     string datetime = "";
 
-    jdbc:Parameter para0 = {sqlType: jdbc:TYPE_INTEGER, value: 1};
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_DATE, value: datein};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_TIME, value: timein};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_TIMESTAMP, value: timestampin};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DATETIME, value: timestampin};
+    sql:Parameter para0 = {sqlType: sql:TYPE_INTEGER, value: 1};
+    sql:Parameter para1 = {sqlType: sql:TYPE_DATE, value: datein};
+    sql:Parameter para2 = {sqlType: sql:TYPE_TIME, value: timein};
+    sql:Parameter para3 = {sqlType: sql:TYPE_TIMESTAMP, value: timestampin};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DATETIME, value: timestampin};
 
     _ = checkpanic testDB->update("Insert into DateTimeTypes " +
         "(row_id, date_type, time_type, timestamp_type, datetime_type) values (?,?,?,?,?)",
@@ -646,11 +647,11 @@ function testDateTimeAsTimeStruct(string jdbcURL) returns @tainted [int, int, in
     timestampInserted = timestampStruct.time;
     datetimeInserted = datetimeStruct.time;
 
-    jdbc:Parameter para0 = {sqlType: jdbc:TYPE_INTEGER, value: 31};
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_DATE, value: dateStruct};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_TIME, value: timeStruct};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_TIMESTAMP, value: timestampStruct};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DATETIME, value: datetimeStruct};
+    sql:Parameter para0 = {sqlType: sql:TYPE_INTEGER, value: 31};
+    sql:Parameter para1 = {sqlType: sql:TYPE_DATE, value: dateStruct};
+    sql:Parameter para2 = {sqlType: sql:TYPE_TIME, value: timeStruct};
+    sql:Parameter para3 = {sqlType: sql:TYPE_TIMESTAMP, value: timestampStruct};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DATETIME, value: datetimeStruct};
 
     _ = checkpanic testDB->update("Insert into DateTimeTypes " +
         "(row_id, date_type, time_type, timestamp_type, datetime_type) values (?,?,?,?,?)",
@@ -680,11 +681,11 @@ function testDateTimeInt(int datein, int timein, int timestampin, string jdbcURL
         poolOptions: {maximumPoolSize: 1}
     });
 
-    jdbc:Parameter para0 = {sqlType: jdbc:TYPE_INTEGER, value: 32};
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_DATE, value: datein};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_TIME, value: timein};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_TIMESTAMP, value: timestampin};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_DATETIME, value: timestampin};
+    sql:Parameter para0 = {sqlType: sql:TYPE_INTEGER, value: 32};
+    sql:Parameter para1 = {sqlType: sql:TYPE_DATE, value: datein};
+    sql:Parameter para2 = {sqlType: sql:TYPE_TIME, value: timein};
+    sql:Parameter para3 = {sqlType: sql:TYPE_TIMESTAMP, value: timestampin};
+    sql:Parameter para4 = {sqlType: sql:TYPE_DATETIME, value: timestampin};
 
     int date = -1;
     int time = -1;
@@ -779,10 +780,10 @@ function testBlobInsert(string jdbcURL) returns int {
             blobData = rs.BLOB_TYPE;
         }
     }
-    jdbc:Parameter para0 = {sqlType: jdbc:TYPE_INTEGER, value: 10};
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_BLOB, value: blobData};
+    sql:Parameter para0 = {sqlType: sql:TYPE_INTEGER, value: 10};
+    sql:Parameter para1 = {sqlType: sql:TYPE_BLOB, value: blobData};
     var insertCountRet = testDB->update("Insert into ComplexTypes (row_id, blob_type) values (?,?)", para0, para1);
-    int insertCount = insertCountRet is jdbc:UpdateResult ? insertCountRet.updatedRowCount : -1;
+    int insertCount = insertCountRet is sql:UpdateResult ? insertCountRet.updatedRowCount : -1;
 
     checkpanic testDB.stop();
     return insertCount;
@@ -1110,31 +1111,31 @@ function testSignedIntMaxMinValues(string jdbcURL) returns @tainted [int, int, i
     string str = "";
 
     //Insert signed max
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_INTEGER, value: 1};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_TINYINT, value: 127};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_SMALLINT, value: 32767};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_INTEGER, value: 2147483647};
-    jdbc:Parameter para5 = {sqlType: jdbc:TYPE_BIGINT, value: 9223372036854775807};
+    sql:Parameter para1 = {sqlType: sql:TYPE_INTEGER, value: 1};
+    sql:Parameter para2 = {sqlType: sql:TYPE_TINYINT, value: 127};
+    sql:Parameter para3 = {sqlType: sql:TYPE_SMALLINT, value: 32767};
+    sql:Parameter para4 = {sqlType: sql:TYPE_INTEGER, value: 2147483647};
+    sql:Parameter para5 = {sqlType: sql:TYPE_BIGINT, value: 9223372036854775807};
     var updateRet1 = testDB->update(insertSQL, para1, para2, para3, para4, para5);
-    maxInsert = updateRet1 is jdbc:UpdateResult ? updateRet1.updatedRowCount : maxInsert;
+    maxInsert = updateRet1 is sql:UpdateResult ? updateRet1.updatedRowCount : maxInsert;
 
     //Insert signed min
-    para1 = {sqlType: jdbc:TYPE_INTEGER, value: 2};
-    para2 = {sqlType: jdbc:TYPE_TINYINT, value: -128};
-    para3 = {sqlType: jdbc:TYPE_SMALLINT, value: -32768};
-    para4 = {sqlType: jdbc:TYPE_INTEGER, value: -2147483648};
-    para5 = {sqlType: jdbc:TYPE_BIGINT, value: -9223372036854775808};
+    para1 = {sqlType: sql:TYPE_INTEGER, value: 2};
+    para2 = {sqlType: sql:TYPE_TINYINT, value: -128};
+    para3 = {sqlType: sql:TYPE_SMALLINT, value: -32768};
+    para4 = {sqlType: sql:TYPE_INTEGER, value: -2147483648};
+    para5 = {sqlType: sql:TYPE_BIGINT, value: -9223372036854775808};
     var updateRet2 = testDB->update(insertSQL, para1, para2, para3, para4, para5);
-    minInsert = updateRet2 is jdbc:UpdateResult ? updateRet2.updatedRowCount : minInsert;
+    minInsert = updateRet2 is sql:UpdateResult ? updateRet2.updatedRowCount : minInsert;
 
     //Insert null
-    para1 = {sqlType: jdbc:TYPE_INTEGER, value: 3};
-    para2 = {sqlType: jdbc:TYPE_TINYINT, value: ()};
-    para3 = {sqlType: jdbc:TYPE_SMALLINT, value: ()};
-    para4 = {sqlType: jdbc:TYPE_INTEGER, value: ()};
-    para5 = {sqlType: jdbc:TYPE_BIGINT, value: ()};
+    para1 = {sqlType: sql:TYPE_INTEGER, value: 3};
+    para2 = {sqlType: sql:TYPE_TINYINT, value: ()};
+    para3 = {sqlType: sql:TYPE_SMALLINT, value: ()};
+    para4 = {sqlType: sql:TYPE_INTEGER, value: ()};
+    para5 = {sqlType: sql:TYPE_BIGINT, value: ()};
     var updateRet3 = testDB->update(insertSQL, para1, para2, para3, para4, para5);
-    nullInsert = updateRet3 is jdbc:UpdateResult ? updateRet3.updatedRowCount : nullInsert;
+    nullInsert = updateRet3 is sql:UpdateResult ? updateRet3.updatedRowCount : nullInsert;
 
     var dtRet = testDB->select(selectSQL, ());
 
@@ -1190,19 +1191,19 @@ function testComplexTypeInsertAndRetrieval(string jdbcURL) returns @tainted [int
     string str;
 
     //Insert data
-    jdbc:Parameter para1 = {sqlType: jdbc:TYPE_INTEGER, value: 100};
-    jdbc:Parameter para2 = {sqlType: jdbc:TYPE_BLOB, value: content};
-    jdbc:Parameter para3 = {sqlType: jdbc:TYPE_CLOB, value: text};
-    jdbc:Parameter para4 = {sqlType: jdbc:TYPE_BINARY, value: content};
+    sql:Parameter para1 = {sqlType: sql:TYPE_INTEGER, value: 100};
+    sql:Parameter para2 = {sqlType: sql:TYPE_BLOB, value: content};
+    sql:Parameter para3 = {sqlType: sql:TYPE_CLOB, value: text};
+    sql:Parameter para4 = {sqlType: sql:TYPE_BINARY, value: content};
     var updateRet1 = testDB->update(insertSQL, para1, para2, para3, para4);
-    retDataInsert = updateRet1 is jdbc:UpdateResult ? updateRet1.updatedRowCount : retDataInsert;
+    retDataInsert = updateRet1 is sql:UpdateResult ? updateRet1.updatedRowCount : retDataInsert;
     //Insert null values
-    para1 = {sqlType: jdbc:TYPE_INTEGER, value: 200};
-    para2 = {sqlType: jdbc:TYPE_BLOB, value: ()};
-    para3 = {sqlType: jdbc:TYPE_CLOB, value: ()};
-    para4 = {sqlType: jdbc:TYPE_BINARY, value: ()};
+    para1 = {sqlType: sql:TYPE_INTEGER, value: 200};
+    para2 = {sqlType: sql:TYPE_BLOB, value: ()};
+    para3 = {sqlType: sql:TYPE_CLOB, value: ()};
+    para4 = {sqlType: sql:TYPE_BINARY, value: ()};
     var updateRet2 = testDB->update(insertSQL, para1, para2, para3, para4);
-    retNullInsert = updateRet2 is jdbc:UpdateResult ? updateRet2.updatedRowCount : retNullInsert;
+    retNullInsert = updateRet2 is sql:UpdateResult ? updateRet2.updatedRowCount : retNullInsert;
 
     var selectRet = testDB->select(selectSQL, ());
 

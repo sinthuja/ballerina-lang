@@ -41,9 +41,10 @@ function getJdbcOptions(Options options) returns map<anydata>{
 public type ClientConfiguration record {|
     *sql:ClientConfiguration;
     string host;
-    int port = 3306;
+    int? port = 3306;
     string database;
-    Options options;
+    sql:PoolOptions poolOptions = {};
+    Options options = {};
 |};
 
 public type Options record{|
@@ -54,20 +55,20 @@ public type Options record{|
     // java key tool. As this will be exposing the details of java, ignoring those properties.
     // If someone requires it, they can use JDBC connector.
     //*Specific to mysql 8.0.13 or later*
-    SSLMode sslMode = PREFERRED;
+    SSLMode? sslMode = PREFERRED;
     //Sets the collation used for client-server interaction on connection. In contrast to charset,
     // collation does not issue additional queries. If the specified collation is unavailable on the target server, the connection will fail.
     //A list of valid charsets for a server is retrievable with SHOW COLLATION.
     //The default collation (utf8mb4_general_ci) is supported from MySQL 5.5.
     //You should use an older collation (e.g. utf8_general_ci) for older MySQL.
-    string collation = "utf8mb4_general_ci";
+    string? collation = "utf8mb4_general_ci";
     // Maximum allowed packet size to send to server. If not set, the value of system variable 'max_allowed_packet'
     // in server will be used to initialize this upon connecting.
     // This value will not take effect if set larger than the value of 'max_allowed_packet'.
     //default is 65535. Is this required?
-    int maxAllowedPacket = 65535;
+    int? maxAllowedPacket = 65535;
     //If 0, no read/write timeout (socketTimeout in JDBC properties).
-    int readWriteTimeoutInSeconds = 30;
+    int? readWriteTimeoutInSeconds = 30;
 
 |};
 
@@ -79,9 +80,9 @@ public type SSLMode NONE | PREFERRED | Required ;
 //Empty record will map to REQUIRED.
 public type Required record {|
    //Setting clientKeystore or trustKeystore will enable VERIFY_CA
-  crypto:KeyStore clientCertKeystore;
-  crypto:KeyStore trustCertKeystore;
+  crypto:KeyStore? clientCertKeystore = ();
+  crypto:KeyStore? trustCertKeystore = ();
   //Enabling this will enable host name verification as well.
-  boolean verifyHostname;
+  boolean? verifyHostname =  false;
 |};
 

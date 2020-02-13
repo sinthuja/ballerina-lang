@@ -25,6 +25,7 @@ configurations.all {
 dependencies {
     baloImplementation project(path: ':ballerina-lang:annotations', configuration: 'baloImplementation')
     baloImplementation project(path: ':ballerina-config-api', configuration: 'baloImplementation')
+    baloImplementation project(path: ':ballerina-sql', configuration: 'baloImplementation')
 
     // transitive
     baloImplementation project(path: ':ballerina-system', configuration: 'baloImplementation')

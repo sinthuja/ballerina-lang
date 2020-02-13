@@ -14,6 +14,7 @@
 // under the License.
 
 import ballerinax/java.jdbc;
+import ballerinax/java.sql;
 
 string jdbcUserName = "SA";
 string jdbcPassword = "";
@@ -208,15 +209,15 @@ function testCallWithStringTypesOutParams(string jdbcURL) returns [anydata, anyd
         poolOptions: {maximumPoolSize: 1}
     });
 
-    jdbc:Parameter paraID = {sqlType: jdbc:TYPE_INTEGER, value: 1};
-    jdbc:Parameter paraVarchar = {sqlType: jdbc:TYPE_VARCHAR, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraCharmax = {sqlType: jdbc:TYPE_VARCHAR, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraChar = {sqlType: jdbc:TYPE_CHAR, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraCharactermax = {sqlType: jdbc:TYPE_VARCHAR, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraCharacter = {sqlType: jdbc:TYPE_CHAR, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraNvarcharmax = {sqlType: jdbc:TYPE_VARCHAR, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraLongvarchar = {sqlType: jdbc:TYPE_LONGVARCHAR, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraClob = {sqlType: jdbc:TYPE_CLOB, direction: jdbc:DIRECTION_OUT};
+    sql:Parameter paraID = {sqlType: sql:TYPE_INTEGER, value: 1};
+    sql:Parameter paraVarchar = {sqlType: sql:TYPE_VARCHAR, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraCharmax = {sqlType: sql:TYPE_VARCHAR, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraChar = {sqlType: sql:TYPE_CHAR, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraCharactermax = {sqlType: sql:TYPE_VARCHAR, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraCharacter = {sqlType: sql:TYPE_CHAR, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraNvarcharmax = {sqlType: sql:TYPE_VARCHAR, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraLongvarchar = {sqlType: sql:TYPE_LONGVARCHAR, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraClob = {sqlType: sql:TYPE_CLOB, direction: sql:DIRECTION_OUT};
 
     var ret = testDB->call("{call SelectStringDataWithOutParams(?, ?, ?, ?, ?, ?, ?, ?, ?)}", (), paraID,
         paraVarchar, paraCharmax, paraChar, paraCharactermax, paraCharacter, paraNvarcharmax, paraLongvarchar, paraClob);
@@ -234,17 +235,17 @@ function testCallWithNumericTypesOutParams(string jdbcURL) returns [anydata, any
         poolOptions: {maximumPoolSize: 1}
     });
 
-    jdbc:Parameter paraID = {sqlType: jdbc:TYPE_INTEGER, value: 1};
-    jdbc:Parameter paraInt = {sqlType: jdbc:TYPE_INTEGER, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraBigInt = {sqlType: jdbc:TYPE_BIGINT, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraSmallInt = {sqlType: jdbc:TYPE_SMALLINT, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraTinyInt = {sqlType: jdbc:TYPE_TINYINT, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraBit = {sqlType: jdbc:TYPE_BIT, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraDecimal = {sqlType: jdbc:TYPE_DECIMAL, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraNumeric = {sqlType: jdbc:TYPE_NUMERIC, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraFloat = {sqlType: jdbc:TYPE_FLOAT, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraReal = {sqlType: jdbc:TYPE_REAL, direction: jdbc:DIRECTION_OUT};
-    jdbc:Parameter paraDouble = {sqlType: jdbc:TYPE_DOUBLE, direction: jdbc:DIRECTION_OUT};
+    sql:Parameter paraID = {sqlType: sql:TYPE_INTEGER, value: 1};
+    sql:Parameter paraInt = {sqlType: sql:TYPE_INTEGER, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraBigInt = {sqlType: sql:TYPE_BIGINT, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraSmallInt = {sqlType: sql:TYPE_SMALLINT, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraTinyInt = {sqlType: sql:TYPE_TINYINT, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraBit = {sqlType: sql:TYPE_BIT, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraDecimal = {sqlType: sql:TYPE_DECIMAL, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraNumeric = {sqlType: sql:TYPE_NUMERIC, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraFloat = {sqlType: sql:TYPE_FLOAT, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraReal = {sqlType: sql:TYPE_REAL, direction: sql:DIRECTION_OUT};
+    sql:Parameter paraDouble = {sqlType: sql:TYPE_DOUBLE, direction: sql:DIRECTION_OUT};
 
     var ret = testDB->call("{call SelectNumericDataWithOutParams(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}", (), paraID,
         paraInt, paraBigInt, paraSmallInt, paraTinyInt, paraBit, paraDecimal, paraNumeric, paraFloat, paraReal,
