@@ -43,7 +43,7 @@ public type ClientConfiguration record {|
     string host;
     int? port = 3306;
     string database;
-    sql:PoolOptions poolOptions = {};
+    sql:PoolOptions poolOptions?;
     Options options = {};
 |};
 

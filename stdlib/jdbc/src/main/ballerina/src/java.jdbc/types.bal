@@ -27,7 +27,7 @@ import ballerinax/java.sql;
 public type ClientConfiguration record {|
     *sql:ClientConfiguration;
     string url = "";
-    PoolOptions poolOptions = {};
+    PoolOptions poolOptions?;
     map<anydata> dbOptions = {};
 |};
 
