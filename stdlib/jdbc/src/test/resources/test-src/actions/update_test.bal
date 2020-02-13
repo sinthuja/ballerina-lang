@@ -15,7 +15,7 @@
 
 import ballerina/time;
 import ballerinax/java.jdbc;
-import ballerinax/java.sql;
+import ballerinax/sql;
 
 
 string jdbcUserName = "SA";

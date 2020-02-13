@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerinax/java;
-import ballerinax/java.sql;
+import ballerinax/sql;
 
 # Represents a JDBC client endpoint.
 #

@@ -16,7 +16,7 @@
 
 import ballerina/config;
 import ballerinax/java;
-import ballerinax/java.sql;
+import ballerinax/sql;
 
 # Provides a set of configurations for the JDBC Client.
 #

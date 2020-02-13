@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/crypto;
-import ballerinax/java.sql;
+import ballerinax/sql;
 import ballerinax/java.jdbc;
 
 public type Client client object {
@@ -31,6 +31,8 @@ public type Client client object {
           dbOptions: jdbcOptions
         });
     }
+
+
 };
 
 function getJdbcOptions(Options options) returns map<anydata>{

@@ -16,7 +16,7 @@
 import ballerina/io;
 import ballerina/jsonutils;
 import ballerinax/java.jdbc;
-import ballerinax/java.sql;
+import ballerinax/sql;
 
 public type Customer record {
     int customerId;

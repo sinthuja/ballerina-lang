@@ -15,7 +15,7 @@
 
 import ballerina/transactions;
 import ballerinax/java.jdbc;
-import ballerinax/java.sql;
+import ballerinax/sql;
 
 type ResultCount record {
     int COUNTVAL;

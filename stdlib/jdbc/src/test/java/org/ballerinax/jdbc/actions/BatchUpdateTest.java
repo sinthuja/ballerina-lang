@@ -121,7 +121,7 @@ public class BatchUpdateTest {
         BValue[] returns = BRunUtil.invoke(result, "testErrorWithBatchUpdate", args);
         Assert.assertEquals(returns.length, 5);
         Assert.assertTrue(returns[0].stringValue().contains("array values are -3"));
-        Assert.assertTrue(returns[1].stringValue().contains("{ballerinax/java.sql}DatabaseError"));
+        Assert.assertTrue(returns[1].stringValue().contains("{ballerinax/sql}DatabaseError"));
         Assert.assertTrue(((BBoolean) returns[2]).booleanValue());
         Assert.assertTrue(((BBoolean) returns[3]).booleanValue());
         Assert.assertTrue(((BBoolean) returns[4]).booleanValue());

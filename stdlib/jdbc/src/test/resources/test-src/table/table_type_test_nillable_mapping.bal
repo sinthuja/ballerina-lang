@@ -16,7 +16,7 @@
 
 import ballerina/time;
 import ballerinax/java.jdbc;
-import ballerinax/java.sql;
+import ballerinax/sql;
 
 type ResultDatesWithNillableStringType record {
     string? DATE_TYPE;

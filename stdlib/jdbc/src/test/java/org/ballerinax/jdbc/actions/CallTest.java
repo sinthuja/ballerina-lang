@@ -150,7 +150,7 @@ public class CallTest {
     public void testCallWithApplicationError() {
         BValue[] returns = BRunUtil.invoke(result, "testCallWithApplicationError", args);
         Assert.assertTrue(returns[0] instanceof BError);
-        Assert.assertEquals(((BError) returns[0]).getReason(), "{ballerinax/java.sql}ApplicationError");
+        Assert.assertEquals(((BError) returns[0]).getReason(), "{ballerinax/sql}ApplicationError");
         Assert.assertEquals(((BError) returns[0]).getDetails().stringValue(), "{message:\"failed to execute stored "
                 + "procedure: mismatching record type count 2 and returned result set count 1 "
                 + "from the stored procedure.\"}");
