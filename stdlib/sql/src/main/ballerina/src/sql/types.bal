@@ -41,7 +41,7 @@ public type ClientConfiguration record {
 # + validationTimeoutInMillis - The maximum duration of time that a connection will be tested for aliveness. Default
 #                       value is 5000 (5 seconds) and it can be changed through the configuration API with the key
 #                       `b7a.sql.pool.validationTimeoutInMillis`.  Lowest acceptable validation timeout is 250 ms.
-public type PoolOptions record {
+public type PoolOptions record {|
     string connectionInitSql = config:getAsString("b7a.sql.pool.connectionInitSql", "");
     //string dataSourceName = config:getAsString("b7a.sql.pool.dataSourceName", "");
     boolean autoCommit = config:getAsBoolean("b7a.sql.pool.autoCommit", true);
@@ -52,7 +52,7 @@ public type PoolOptions record {
     int minimumIdle = config:getAsInt("b7a.sql.pool.minimumIdle", 15);
     int maxLifetimeInMillis = config:getAsInt("b7a.sql.pool.maxLifetimeInMillis", 1800000);
     int validationTimeoutInMillis = config:getAsInt("\"b7a.sql.pool.validationTimeoutInMillis\"", 5000);
-};
+|};
 
 # The SQL Datatype of the parameter.
 #

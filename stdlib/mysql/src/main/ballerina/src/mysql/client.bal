@@ -25,12 +25,23 @@ public type Client client object {
     public function __init(ClientConfiguration clientConfig){
         string jdbcMySQL = "jdbc:mysql://"+clientConfig.host+":"+clientConfig.port.toString()+"/"+clientConfig.database;
         map<anydata> jdbcOptions = getJdbcOptions(clientConfig.options);
-        self.jdbcClient = new ({
-          url: jdbcMySQL,
-          username: clientConfig.username,
-          password: clientConfig.password,
-          dbOptions: jdbcOptions
-        });
+        sql:PoolOptions? poolOps = clientConfig?.poolOptions;
+        if(poolOps is sql:PoolOptions){
+           self.jdbcClient = new ({
+              url: jdbcMySQL,
+              username: clientConfig.username,
+              password: clientConfig.password,
+              dbOptions: jdbcOptions,
+              poolOptions: getJdbcPoolOptions(poolOps)
+           });
+        } else {
+           self.jdbcClient = new ({
+              url: jdbcMySQL,
+              username: clientConfig.username,
+              password: clientConfig.password,
+              dbOptions: jdbcOptions
+          });
+       }
     }
 
     # The call remote function implementation for JDBC Client to invoke stored procedures/functions.
@@ -101,10 +112,16 @@ function getJdbcOptions(Options options) returns map<anydata>{
      return jdbcOptions;
 }
 
+function getJdbcPoolOptions(sql:PoolOptions poolOptions) returns jdbc:PoolOptions {
+     jdbc:PoolOptions jdbcPool = {};
+    //todo: set all props from sqlPoolOptions to jdbc Pooloptions
+     return jdbcPool;
+}
+
 public type ClientConfiguration record {|
     *sql:ClientConfiguration;
     string host;
-    int? port = 3306;
+    int port = 3306; //how to handle no port case?
     string database;
     sql:PoolOptions poolOptions?;
     Options options = {};
