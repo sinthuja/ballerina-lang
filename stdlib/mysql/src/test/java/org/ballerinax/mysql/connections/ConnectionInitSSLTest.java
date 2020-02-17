@@ -40,39 +40,49 @@ import java.nio.file.Paths;
 /**
  * This test case validates the connections.
  */
-public class ConnectionInitTest {
+public class ConnectionInitSSLTest {
     private static final String DB_NAME = "CONNECT_DB";
     private static final String CONNECTION_INIT_TEST = "MySQLSelectTest";
     private CompileResult result;
     private DB datbase;
-    private BValue[] args = {new BString(SQLDBUtils.DB_HOST), new BInteger(SQLDBUtils.DB_PORT),
-            new BString(SQLDBUtils.DB_USER_NAME), new BString(SQLDBUtils.DB_USER_PW), new BString(DB_NAME)};
+    private BValue[] args = {new BString(SQLDBUtils.DB_HOST), new BInteger(3306),
+            new BString("root"), new BString("Test@123"), new BString(DB_NAME)};
 
     @BeforeClass
     public void setup() throws ManagedProcessException, FileNotFoundException {
-        result = BCompileUtil.compile(Paths.get("test-src", "connection", "connection_init_test.bal").toString());
-        DBConfigurationBuilder configBuilder = DBConfigurationBuilder.newBuilder();
-        configBuilder.setPort(SQLDBUtils.DB_PORT);
-        configBuilder.setDataDir(SQLDBUtils.DB_DIRECTORY);
-        configBuilder.setDeletingTemporaryBaseAndDataDirsOnShutdown(true);
-        datbase = DB.newEmbeddedDB(configBuilder.build());
-        datbase.start();
-        datbase.createDB(DB_NAME, SQLDBUtils.DB_USER_NAME, SQLDBUtils.DB_USER_PW);
-        String sqlFile = SQLDBUtils.SQL_RESOURCE_DIR + File.separator + SQLDBUtils.CONNECTIONS_DIR +
-                File.separator + "connections_test_data.sql";
-        datbase.source(sqlFile, DB_NAME);
+        result = BCompileUtil.compile(Paths.get("test-src", "connection", "connection_ssl_test.bal").toString());
+//        https://dev.mysql.com/doc/mysql-secure-deployment-guide/5.7/en/secure-deployment-secure-connections.html
+
+//        DBConfigurationBuilder configBuilder = DBConfigurationBuilder.newBuilder();
+//        configBuilder.setPort(SQLDBUtils.DB_PORT);
+//        configBuilder.setDataDir(SQLDBUtils.DB_DIRECTORY);
+//        configBuilder.setDeletingTemporaryBaseAndDataDirsOnShutdown(true);
+//        configBuilder.setSecurityDisabled(false);
+//        datbase = DB.newEmbeddedDB(configBuilder.build());
+//        datbase.start();
+//        datbase.createDB(DB_NAME, SQLDBUtils.DB_USER_NAME, SQLDBUtils.DB_USER_PW);
+//        String sqlFile = SQLDBUtils.SQL_RESOURCE_DIR + File.separator + SQLDBUtils.CONNECTIONS_DIR +
+//                File.separator + "connections_test_data.sql";
+//        datbase.source(sqlFile, DB_NAME);
     }
 
     @Test(groups = CONNECTION_INIT_TEST)
-    public void testWithMandatoryFields() {
-        BValue[] returns = BRunUtil.invoke(result, "testWithMandatoryFields", args);
+    public void testWithVerifyCert() {
+        BValue[] returns = BRunUtil.invoke(result, "testWithVerifyCert", args);
         final boolean expected = true;
         Assert.assertEquals(((BBoolean) returns[0]).booleanValue(), expected);
     }
 
     @Test(groups = CONNECTION_INIT_TEST)
-    public void testWithPoolOptions() {
-        BValue[] returns = BRunUtil.invoke(result, "testWithPoolOptions", args);
+    public void testWithPreferredSSL() {
+        BValue[] returns = BRunUtil.invoke(result, "testWithPreferredSSL", args);
+        final boolean expected = true;
+        Assert.assertEquals(((BBoolean) returns[0]).booleanValue(), expected);
+    }
+
+    @Test(groups = CONNECTION_INIT_TEST)
+    public void testWithRequiredSSL() {
+        BValue[] returns = BRunUtil.invoke(result, "testWithRequiredSSL", args);
         final boolean expected = true;
         Assert.assertEquals(((BBoolean) returns[0]).booleanValue(), expected);
     }
@@ -80,6 +90,6 @@ public class ConnectionInitTest {
     @AfterSuite
     public void cleanup() throws ManagedProcessException {
         SQLDBUtils.deleteDirectory(new File(SQLDBUtils.DB_DIRECTORY));
-        datbase.stop();
+//        datbase.stop();
     }
 }

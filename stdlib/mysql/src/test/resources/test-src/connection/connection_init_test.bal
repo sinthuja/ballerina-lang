@@ -14,6 +14,7 @@
 // under the License.
 
 import ballerinax/mysql;
+import ballerinax/sql;
 
 function testWithMandatoryFields(string hostname, int port, string user, string pw, string db) returns boolean {
     mysql:Client testDB = new ({
@@ -22,6 +23,28 @@ function testWithMandatoryFields(string hostname, int port, string user, string 
             username: user,
             password: pw,
             database: db
+    });
+    var dt = testDB->select("SELECT * FROM Customers", ());
+    boolean success = false;
+    if (dt is table<record {}>) {
+        success = true;
+    }
+    checkpanic testDB.close();
+    return success;
+}
+
+function testWithPoolOptions(string hostname, int port, string user, string pw, string db) returns boolean {
+    sql:PoolOptions connectionPool = {
+        maximumPoolSize: 20,
+        autoCommit: false
+    };
+    mysql:Client testDB = new ({
+            host: hostname,
+            port: port,
+            username: user,
+            password: pw,
+            database: db,
+            poolOptions: connectionPool
     });
     var dt = testDB->select("SELECT * FROM Customers", ());
     boolean success = false;

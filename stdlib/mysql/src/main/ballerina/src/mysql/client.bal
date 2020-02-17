@@ -135,34 +135,32 @@ public type Options record{|
     // java key tool. As this will be exposing the details of java, ignoring those properties.
     // If someone requires it, they can use JDBC connector.
     //*Specific to mysql 8.0.13 or later*
-    SSLMode? sslMode = PREFERRED;
+    //default is preferred
+    SSLConfig? ssl = {};
     //Sets the collation used for client-server interaction on connection. In contrast to charset,
     // collation does not issue additional queries. If the specified collation is unavailable on the target server, the connection will fail.
     //A list of valid charsets for a server is retrievable with SHOW COLLATION.
     //The default collation (utf8mb4_general_ci) is supported from MySQL 5.5.
     //You should use an older collation (e.g. utf8_general_ci) for older MySQL.
-    string? collation = "utf8mb4_general_ci";
+    //default utf8mb4_general_ci
+    string collation?;
     // Maximum allowed packet size to send to server. If not set, the value of system variable 'max_allowed_packet'
     // in server will be used to initialize this upon connecting.
     // This value will not take effect if set larger than the value of 'max_allowed_packet'.
     //default is 65535. Is this required?
-    int? maxAllowedPacket = 65535;
+    int maxAllowedPacket?;
     //If 0, no read/write timeout (socketTimeout in JDBC properties).
-    int? readWriteTimeoutInSeconds = 30;
-
+    //let's set default to 30
+    int readWriteTimeoutInSeconds?;
 |};
 
-const NONE = "NONE";
-const PREFERRED = "PREFERRED";
-
-public type SSLMode NONE | PREFERRED | Required ;
-
 //Empty record will map to REQUIRED.
-public type Required record {|
+public type SSLMode "PREFERRED"| "REQUIRED" | "VERIFY_CERT" | "VERIFY_IDENTITY";
+
+public type SSLConfig record {|
+  SSLMode mode = "PREFERRED";
    //Setting clientKeystore or trustKeystore will enable VERIFY_CA
-  crypto:KeyStore? clientCertKeystore = ();
-  crypto:KeyStore? trustCertKeystore = ();
-  //Enabling this will enable host name verification as well.
-  boolean? verifyHostname =  false;
+  crypto:KeyStore clientCertKeystore?;
+  crypto:KeyStore trustCertKeystore?;
 |};
 

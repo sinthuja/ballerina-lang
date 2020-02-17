@@ -24,7 +24,8 @@ under the License.
         <parameter name="enableJBallerinaTests" value="true"/>
         <classes >
 <!--            <class name="org.ballerinax.mysql.actions.SelectTest"/>-->
-            <class name="org.ballerinax.mysql.connections.ConnectionInitTest"/>
+<!--            <class name="org.ballerinax.mysql.connections.ConnectionInitTest"/>-->
+            <class name="org.ballerinax.mysql.connections.ConnectionInitSSLTest"/>
         </classes>
     </test>
 </suite>
