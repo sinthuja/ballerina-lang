@@ -24,11 +24,7 @@ import org.ballerinalang.jvm.values.ObjectValue;
 import org.ballerinalang.jvm.values.TypedescValue;
 import org.ballerinax.jdbc.Constants;
 import org.ballerinax.jdbc.datasource.SQLDatasource;
-import org.ballerinax.jdbc.statement.BatchUpdateStatement;
-import org.ballerinax.jdbc.statement.CallStatement;
-import org.ballerinax.jdbc.statement.SQLStatement;
-import org.ballerinax.jdbc.statement.SelectStatement;
-import org.ballerinax.jdbc.statement.UpdateStatement;
+import org.ballerinax.jdbc.statement.*;
 
 /**
  * External remote method implementations of the JDBC client.
@@ -60,6 +56,13 @@ public class ExternActions {
         SQLDatasource sqlDatasource = (SQLDatasource) client.getNativeData(Constants.JDBC_CLIENT);
         SQLStatement selectStatement = new SelectStatement(client, sqlDatasource, query, parameters,
                 (TypedescValue) recordType, Scheduler.getStrand());
+        return selectStatement.execute();
+    }
+
+    public static Object nativeSelectStream(ObjectValue client, String query,
+                                      ArrayValue parameters) {
+        SQLDatasource sqlDatasource = (SQLDatasource) client.getNativeData(Constants.JDBC_CLIENT);
+        SQLStatement selectStatement = new SelectStatementStream(client, sqlDatasource, query, parameters, Scheduler.getStrand());
         return selectStatement.execute();
     }
 

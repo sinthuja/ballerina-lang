@@ -14,6 +14,8 @@
 // under the License.
 import ballerina/jsonutils;
 import ballerinax/java.jdbc;
+import ballerinax/sql;
+import ballerina/io;
 
 jdbc:PoolOptions properties = {
     maximumPoolSize: 1,
@@ -50,6 +52,25 @@ function testConnectionPoolProperties1(string jdbcURL) returns @tainted json {
     json j = getJsonConversionResult(dt);
     checkpanic testDB.stop();
     return j;
+}
+
+function testSelect2(string jdbcURL) {
+    jdbc:Client testDB = new ({
+        url: jdbcURL,
+        username: "SA",
+        password: "",
+        poolOptions: {maximumPoolSize: 1}
+    });
+
+    stream<record{}>|sql:Error returnResult = testDB->selectStream("SELECT * from Customers");
+
+    if(returnResult is stream<record{}>){
+        returnResult.forEach(function (record{} aRecord){
+            io:println(aRecord);
+        });
+    } else {
+        io:println(returnResult);
+    }
 }
 
 function testConnectionPoolProperties2(string jdbcURL) returns @tainted json {

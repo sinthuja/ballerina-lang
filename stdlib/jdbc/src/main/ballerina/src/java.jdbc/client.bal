@@ -57,6 +57,20 @@ public type Client client object {
         return nativeSelect(self, java:fromString(sqlQuery), recordType, parameters);
     }
 
+
+    # The select remote function implementation for JDBC Client to select data from tables.
+    #
+    # + sqlQuery - SQL query to execute
+    # + parameters - The parameters to be passed to the select query
+    # + return - A `stream` returned by the SQL query statement else `Error` will be returned if there is an error
+    public remote function selectStream(@untainted string sqlQuery, sql:Param... parameters)
+                                  returns @tainted stream<record {}>|sql:Error {
+        if (!self.clientActive) {
+            return self.handleStoppedClientInvocation();
+        }
+        return nativeSelectStream(self, java:fromString(sqlQuery), parameters);
+    }
+
     # The update remote function implementation for JDBC Client to insert/delete/modify data and schema of the database.
     #
     # + sqlQuery - SQL statement to execute
@@ -126,6 +140,12 @@ function nativeSelect(Client jdbcClient, @untainted handle sqlQuery, typedesc<re
     sql:Param[] parameters) returns @tainted table<record {}>|sql:Error = @java:Method {
         class: "org.ballerinax.jdbc.methods.ExternActions"
     } external;
+
+function nativeSelectStream(Client jdbcClient, @untainted handle sqlQuery,
+    sql:Param[] parameters) returns @tainted stream<record {}>|sql:Error = @java:Method {
+        class: "org.ballerinax.jdbc.methods.ExternActions"
+    } external;
+
 
 function nativeCall(Client jdbcClient, @untainted handle sqlQuery, typedesc<record {}>[]? recordType,
     sql:Param[] parameters) returns @tainted table<record {}>[]|()|sql:Error = @java:Method {

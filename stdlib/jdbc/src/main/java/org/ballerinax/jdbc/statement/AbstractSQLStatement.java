@@ -29,26 +29,15 @@ import org.ballerinalang.jvm.transactions.BallerinaTransactionContext;
 import org.ballerinalang.jvm.transactions.TransactionLocalContext;
 import org.ballerinalang.jvm.transactions.TransactionResourceManager;
 import org.ballerinalang.jvm.transactions.TransactionUtils;
-import org.ballerinalang.jvm.types.BArrayType;
-import org.ballerinalang.jvm.types.BPackage;
-import org.ballerinalang.jvm.types.BRecordType;
-import org.ballerinalang.jvm.types.BStructureType;
-import org.ballerinalang.jvm.types.BType;
-import org.ballerinalang.jvm.types.BTypes;
-import org.ballerinalang.jvm.types.TypeFlags;
-import org.ballerinalang.jvm.types.TypeTags;
-import org.ballerinalang.jvm.values.ArrayValue;
-import org.ballerinalang.jvm.values.ArrayValueImpl;
-import org.ballerinalang.jvm.values.DecimalValue;
-import org.ballerinalang.jvm.values.MapValue;
-import org.ballerinalang.jvm.values.ObjectValue;
-import org.ballerinalang.jvm.values.TableValue;
+import org.ballerinalang.jvm.types.*;
+import org.ballerinalang.jvm.values.*;
 import org.ballerinax.jdbc.Constants;
 import org.ballerinax.jdbc.datasource.SQLDatasource;
 import org.ballerinax.jdbc.exceptions.ApplicationException;
 import org.ballerinax.jdbc.exceptions.ErrorGenerator;
 import org.ballerinax.jdbc.table.BCursorTable;
 import org.ballerinax.jdbc.table.SQLDataIterator;
+import org.ballerinax.jdbc.table.StreamSqlIterator;
 import org.ballerinax.jdbc.transaction.SQLTransactionContext;
 
 import java.math.BigDecimal;
@@ -168,6 +157,14 @@ public abstract class AbstractSQLStatement implements SQLStatement {
         return new BCursorTable(
                 new SQLDataIterator(rm, rs, utcCalendar, columnDefinitions, structType, databaseProductName),
                 tableConstraint);
+    }
+
+    StreamValue constructStream( ResultSet rs, List<ColumnDefinition> columnDefinitions) {
+        BStructureType tableConstraint = new BRecordType("$table$anon$constraint$",
+                new BPackage("ballerina", "lang.annotations", "0.0.0"), 0, false,
+                TypeFlags.asMask(TypeFlags.ANYDATA, TypeFlags.PURETYPE));
+        ((BRecordType) tableConstraint).restFieldType = BTypes.typeAnydata;
+        return new StreamValue(new BStreamType(tableConstraint), new StreamSqlIterator(rs, columnDefinitions), null, null);
     }
 
      List<ColumnDefinition> getColumnDefinitions(ResultSet rs) throws SQLException {
