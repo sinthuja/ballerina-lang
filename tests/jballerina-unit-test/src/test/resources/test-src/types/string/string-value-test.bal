@@ -25,10 +25,14 @@ function nonBMPLength() returns (int) {
     return smiley.length();
 }
 
-function recordStringValuePut() returns () {
+function recordStringValue() returns int {
     string smiley = "h😀llo";
     record {| string myField; |} r = {myField: smiley};
-    //TODO: return r
+    boolean containsKey = r.hasKey("myField");
+    if (!containsKey) {
+        return -1;
+    }
+    return r.myField.length();
 }
 
 function testError() returns int {
@@ -54,4 +58,3 @@ function testStringIndexAccessException() {
     string hello = "hello👋";
     string val = hello[6];
 }
-
