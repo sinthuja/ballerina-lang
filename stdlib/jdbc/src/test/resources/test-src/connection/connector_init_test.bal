@@ -66,11 +66,61 @@ function testSelect2(string jdbcURL) {
 
     if(returnResult is stream<record{}>){
         returnResult.forEach(function (record{} aRecord){
+            io:println(aRecord["CUSTOMERID"]);
             io:println(aRecord);
         });
     } else {
         io:println(returnResult);
     }
+}
+
+public type Customer record{
+ int CUSTOMERID;
+ string FIRSTNAME;
+ string LASTNAME;
+ int REGISTRATIONID;
+ float CREDITLIMIT;
+ string COUNTRY;
+};
+
+function testSelect3(string jdbcURL) {
+    jdbc:Client testDB = new ({
+        url: jdbcURL,
+        username: "SA",
+        password: "",
+        poolOptions: {maximumPoolSize: 1}
+    });
+
+    stream<record{}>|sql:Error returnResult = testDB->selectStream("SELECT * from Customers");
+
+   if(returnResult is stream<record{}>){
+          returnResult.forEach(function (record{} aRecord){
+              Customer customer = <Customer> aRecord;
+              io:println(customer);
+          });
+      } else {
+          io:println(returnResult);
+      }
+}
+
+function testSelect4(string jdbcURL) {
+    jdbc:Client testDB = new ({
+        url: jdbcURL,
+        username: "SA",
+        password: "",
+        poolOptions: {maximumPoolSize: 1}
+    });
+
+    stream<record{}>|sql:Error returnResult = testDB->selectStream("SELECT * from Customers");
+
+   if(returnResult is stream<record{}>){
+          stream<Customer> customerStream = <stream<Customer>>returnResult;
+          customerStream.forEach(function (Customer aRecord){
+              io:println(aRecord);
+          });
+      } else {
+          io:println(returnResult);
+      }
 }
 
 function testConnectionPoolProperties2(string jdbcURL) returns @tainted json {

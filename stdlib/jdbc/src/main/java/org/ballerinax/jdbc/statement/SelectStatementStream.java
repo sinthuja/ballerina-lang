@@ -18,7 +18,6 @@
 package org.ballerinax.jdbc.statement;
 
 import org.ballerinalang.jvm.ColumnDefinition;
-import org.ballerinalang.jvm.TableResourceManager;
 import org.ballerinalang.jvm.scheduling.Strand;
 import org.ballerinalang.jvm.values.ArrayValue;
 import org.ballerinalang.jvm.values.ObjectValue;
@@ -45,7 +44,8 @@ public class SelectStatementStream extends AbstractSQLStatement {
     private final String query;
     private final ArrayValue parameters;
 
-    public SelectStatementStream(ObjectValue client, SQLDatasource datasource, String query, ArrayValue parameters, Strand strand) {
+    public SelectStatementStream(ObjectValue client, SQLDatasource datasource, String query,
+                                 ArrayValue parameters, Strand strand) {
         super(strand);
         this.client = client;
         this.datasource = datasource;
@@ -69,9 +69,7 @@ public class SelectStatementStream extends AbstractSQLStatement {
                     datasource.getDatabaseProductName());
             stmt = processedStatement.prepare();
             rs = stmt.executeQuery();
-            TableResourceManager rm = new TableResourceManager(conn, stmt, !strand.isInTransaction());
             List<ColumnDefinition> columnDefinitions = getColumnDefinitions(rs);
-            rm.addResultSet(rs);
             return constructStream(rs, columnDefinitions);
         } catch (SQLException e) {
             cleanupResources(rs, stmt, conn, true);

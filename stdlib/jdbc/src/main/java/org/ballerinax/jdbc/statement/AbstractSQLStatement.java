@@ -30,7 +30,14 @@ import org.ballerinalang.jvm.transactions.TransactionLocalContext;
 import org.ballerinalang.jvm.transactions.TransactionResourceManager;
 import org.ballerinalang.jvm.transactions.TransactionUtils;
 import org.ballerinalang.jvm.types.*;
-import org.ballerinalang.jvm.values.*;
+import org.ballerinalang.jvm.util.Flags;
+import org.ballerinalang.jvm.values.ArrayValue;
+import org.ballerinalang.jvm.values.ArrayValueImpl;
+import org.ballerinalang.jvm.values.DecimalValue;
+import org.ballerinalang.jvm.values.MapValue;
+import org.ballerinalang.jvm.values.ObjectValue;
+import org.ballerinalang.jvm.values.StreamValue;
+import org.ballerinalang.jvm.values.TableValue;
 import org.ballerinax.jdbc.Constants;
 import org.ballerinax.jdbc.datasource.SQLDatasource;
 import org.ballerinax.jdbc.exceptions.ApplicationException;
@@ -52,6 +59,8 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
@@ -109,12 +118,11 @@ public abstract class AbstractSQLStatement implements SQLStatement {
      * If there are any arrays of parameter for types other than sql array, the given query is expanded by adding "?" s
      * to match with the array size.
      *
-     * @param query The query to be processed
+     * @param query      The query to be processed
      * @param parameters Array of parameters belonging to the query
-     *
      * @return The string with "?" place holders for parameters
      */
-     String createProcessedQueryString(String query, ArrayValue parameters) {
+    String createProcessedQueryString(String query, ArrayValue parameters) {
         String currentQuery = query;
         if (parameters != null) {
             int start = 0;
@@ -146,7 +154,7 @@ public abstract class AbstractSQLStatement implements SQLStatement {
     }
 
     TableValue constructTable(TableResourceManager rm, ResultSet rs, BStructureType structType,
-            List<ColumnDefinition> columnDefinitions, String databaseProductName) {
+                              List<ColumnDefinition> columnDefinitions, String databaseProductName) {
         BStructureType tableConstraint = structType;
         if (structType == null) {
             tableConstraint = new BRecordType("$table$anon$constraint$",
@@ -159,15 +167,24 @@ public abstract class AbstractSQLStatement implements SQLStatement {
                 tableConstraint);
     }
 
-    StreamValue constructStream( ResultSet rs, List<ColumnDefinition> columnDefinitions) {
-        BStructureType tableConstraint = new BRecordType("$table$anon$constraint$",
+    StreamValue constructStream(ResultSet rs, List<ColumnDefinition> columnDefinitions) {
+        BRecordType tableConstraint = new BRecordType("$tstream$anon$constraint$",
                 new BPackage("ballerina", "lang.annotations", "0.0.0"), 0, false,
                 TypeFlags.asMask(TypeFlags.ANYDATA, TypeFlags.PURETYPE));
-        ((BRecordType) tableConstraint).restFieldType = BTypes.typeAnydata;
-        return new StreamValue(new BStreamType(tableConstraint), new StreamSqlIterator(rs, columnDefinitions), null, null);
+        tableConstraint.restFieldType = BTypes.typeAnydata;
+        Map<String, BField> fieldMap = new HashMap<>();
+        for (ColumnDefinition column : columnDefinitions) {
+            SQLDataIterator.SQLColumnDefinition sqlCol = (SQLDataIterator.SQLColumnDefinition) column;
+            fieldMap.put(column.getName(), new BField(getBFieldType(sqlCol.getSqlType()), column.getName(),
+                    Flags.PUBLIC + Flags.REQUIRED));
+        }
+        tableConstraint.setFields(fieldMap);
+        return new StreamValue(new BStreamType(tableConstraint), new StreamSqlIterator(rs, columnDefinitions,
+                tableConstraint),
+                null, null);
     }
 
-     List<ColumnDefinition> getColumnDefinitions(ResultSet rs) throws SQLException {
+    List<ColumnDefinition> getColumnDefinitions(ResultSet rs) throws SQLException {
         List<ColumnDefinition> columnDefs = new ArrayList<>();
         Set<String> columnNames = new HashSet<>();
         ResultSetMetaData rsMetaData = rs.getMetaData();
@@ -191,28 +208,28 @@ public abstract class AbstractSQLStatement implements SQLStatement {
         int columnType;
         columnType = rsMeta.getColumnType(index);
         switch (columnType) {
-        case Types.INTEGER:
-        case Types.TINYINT:
-        case Types.SMALLINT:
-        case Types.BIGINT:
-            value = rs.getLong(index);
-            break;
-        case Types.DOUBLE:
-        case Types.FLOAT:
-            value = rs.getDouble(index);
-            break;
-        case Types.BOOLEAN:
-        case Types.BIT:
-            value = rs.getBoolean(index);
-            break;
-        case Types.DECIMAL:
-        case Types.NUMERIC:
-            BigDecimal bigDecimal = rs.getBigDecimal(index);
-            value = (bigDecimal == null) ? null : new DecimalValue(bigDecimal);
-            break;
-        default:
-            value = rs.getString(index);
-            break;
+            case Types.INTEGER:
+            case Types.TINYINT:
+            case Types.SMALLINT:
+            case Types.BIGINT:
+                value = rs.getLong(index);
+                break;
+            case Types.DOUBLE:
+            case Types.FLOAT:
+                value = rs.getDouble(index);
+                break;
+            case Types.BOOLEAN:
+            case Types.BIT:
+                value = rs.getBoolean(index);
+                break;
+            case Types.DECIMAL:
+            case Types.NUMERIC:
+                BigDecimal bigDecimal = rs.getBigDecimal(index);
+                value = (bigDecimal == null) ? null : new DecimalValue(bigDecimal);
+                break;
+            default:
+                value = rs.getString(index);
+                break;
         }
         return value;
     }
@@ -269,30 +286,77 @@ public abstract class AbstractSQLStatement implements SQLStatement {
         }
     }
 
+    private BType getBFieldType(int sqlType) {
+        switch (sqlType) {
+            case Types.ARRAY:
+                return new BArrayType(null);
+            case Types.CHAR:
+            case Types.VARCHAR:
+            case Types.LONGVARCHAR:
+            case Types.NCHAR:
+            case Types.NVARCHAR:
+            case Types.LONGNVARCHAR:
+            case Types.CLOB:
+            case Types.NCLOB:
+            case Types.DATE:
+            case Types.TIME:
+            case Types.TIMESTAMP:
+            case Types.TIMESTAMP_WITH_TIMEZONE:
+            case Types.TIME_WITH_TIMEZONE:
+            case Types.ROWID:
+                return BTypes.typeString;
+            case Types.TINYINT:
+            case Types.SMALLINT:
+            case Types.INTEGER:
+            case Types.BIGINT:
+                return BTypes.typeInt;
+            case Types.BIT:
+            case Types.BOOLEAN:
+                return BTypes.typeBoolean;
+            case Types.NUMERIC:
+            case Types.DECIMAL:
+                return BTypes.typeDecimal;
+            case Types.REAL:
+            case Types.FLOAT:
+            case Types.DOUBLE:
+                return BTypes.typeFloat;
+            case Types.BLOB:
+            case Types.BINARY:
+            case Types.VARBINARY:
+            case Types.LONGVARBINARY:
+                return new BArrayType(BTypes.typeByte);
+            case Types.STRUCT:
+                return BTypes.typeMap;
+            default:
+                return BTypes.typeAny;
+        }
+    }
+
     private String getSQLType(Object value) throws ApplicationException {
         BType type = TypeChecker.getType(value);
         int tag = type.getTag();
         switch (tag) {
-        case TypeTags.INT_TAG:
-            return Constants.SQLDataTypes.BIGINT;
-        case TypeTags.STRING_TAG:
-            return Constants.SQLDataTypes.VARCHAR;
-        case TypeTags.FLOAT_TAG:
-            return Constants.SQLDataTypes.DOUBLE;
-        case TypeTags.BOOLEAN_TAG:
-            return Constants.SQLDataTypes.BOOLEAN;
-        case TypeTags.DECIMAL_TAG:
-            return Constants.SQLDataTypes.DECIMAL;
-        case TypeTags.ARRAY_TAG:
-            if (((BArrayType) type).getElementType().getTag() == TypeTags.BYTE_TAG) {
-                return Constants.SQLDataTypes.BINARY;
-            } else {
-                throw new ApplicationException("array data type " + type.getName() + " as a direct value is " +
-                        "supported only for byte type elements, use jdbc:Parameter instead");
-            }
-        default:
-            throw new ApplicationException("unsupported data type " + type.getName() + " specified as a direct value " +
-                    "for sql operations, use jdbc:Parameter instead");
+            case TypeTags.INT_TAG:
+                return Constants.SQLDataTypes.BIGINT;
+            case TypeTags.STRING_TAG:
+                return Constants.SQLDataTypes.VARCHAR;
+            case TypeTags.FLOAT_TAG:
+                return Constants.SQLDataTypes.DOUBLE;
+            case TypeTags.BOOLEAN_TAG:
+                return Constants.SQLDataTypes.BOOLEAN;
+            case TypeTags.DECIMAL_TAG:
+                return Constants.SQLDataTypes.DECIMAL;
+            case TypeTags.ARRAY_TAG:
+                if (((BArrayType) type).getElementType().getTag() == TypeTags.BYTE_TAG) {
+                    return Constants.SQLDataTypes.BINARY;
+                } else {
+                    throw new ApplicationException("array data type " + type.getName() + " as a direct value is " +
+                            "supported only for byte type elements, use jdbc:Parameter instead");
+                }
+            default:
+                throw new ApplicationException("unsupported data type " + type.getName()
+                        + " specified as a direct value " +
+                        "for sql operations, use jdbc:Parameter instead");
         }
     }
 
@@ -303,11 +367,11 @@ public abstract class AbstractSQLStatement implements SQLStatement {
     /**
      * This will close database connection and statement.
      *
-     * @param stmt SQL statement
-     * @param conn SQL connection
+     * @param stmt               SQL statement
+     * @param conn               SQL connection
      * @param connectionClosable Whether the connection is closable or not. If the connection is not closable this
-     * method will not release the connection. Therefore to avoid connection leaks it should have been taken care
-     * of externally.
+     *                           method will not release the connection. Therefore to avoid connection leaks
+     *                           it should have been taken care of externally.
      */
     void cleanupResources(Statement stmt, Connection conn, boolean connectionClosable) {
         try {
@@ -325,12 +389,12 @@ public abstract class AbstractSQLStatement implements SQLStatement {
     /**
      * This will close database connection, statement and the resultset.
      *
-     * @param rs   SQL resultset
-     * @param stmt SQL statement
-     * @param conn SQL connection
+     * @param rs                 SQL resultset
+     * @param stmt               SQL statement
+     * @param conn               SQL connection
      * @param connectionClosable Whether the connection is closable or not. If the connection is not closable this
-     * method will not release the connection. Therefore to avoid connection leaks it should have been taken care
-     * of externally.
+     *                           method will not release the connection. Therefore to avoid connection leaks it
+     *                           should have been taken care of externally.
      */
     void cleanupResources(ResultSet rs, Statement stmt, Connection conn, boolean connectionClosable) {
         try {
@@ -378,7 +442,7 @@ public abstract class AbstractSQLStatement implements SQLStatement {
                     XAConnection xaConn = datasource.getXADataSource().getXAConnection();
                     XAResource xaResource = xaConn.getXAResource();
                     TransactionResourceManager.getInstance()
-                                              .beginXATransaction(globalTxId, currentTxBlockId, xaResource);
+                            .beginXATransaction(globalTxId, currentTxBlockId, xaResource);
                     conn = xaConn.getConnection();
                     txContext = new SQLTransactionContext(conn, xaResource);
                 } else {
@@ -434,7 +498,7 @@ public abstract class AbstractSQLStatement implements SQLStatement {
                 break;
             }
         }
-        return new Object[] { end, result.toString() };
+        return new Object[]{end, result.toString()};
     }
 
     private String generateQuestionMarks(int n) {

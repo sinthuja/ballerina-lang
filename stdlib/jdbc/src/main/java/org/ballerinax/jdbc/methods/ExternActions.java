@@ -24,7 +24,12 @@ import org.ballerinalang.jvm.values.ObjectValue;
 import org.ballerinalang.jvm.values.TypedescValue;
 import org.ballerinax.jdbc.Constants;
 import org.ballerinax.jdbc.datasource.SQLDatasource;
-import org.ballerinax.jdbc.statement.*;
+import org.ballerinax.jdbc.statement.BatchUpdateStatement;
+import org.ballerinax.jdbc.statement.CallStatement;
+import org.ballerinax.jdbc.statement.SQLStatement;
+import org.ballerinax.jdbc.statement.SelectStatement;
+import org.ballerinax.jdbc.statement.SelectStatementStream;
+import org.ballerinax.jdbc.statement.UpdateStatement;
 
 /**
  * External remote method implementations of the JDBC client.
@@ -33,7 +38,8 @@ import org.ballerinax.jdbc.statement.*;
  */
 public class ExternActions {
 
-    private ExternActions() {}
+    private ExternActions() {
+    }
 
     public static MapValue<String, Object> nativeBatchUpdate(ObjectValue client, String sqlQuery,
                                                              boolean rollbackAllInFailure, ArrayValue... parameters) {
@@ -60,9 +66,10 @@ public class ExternActions {
     }
 
     public static Object nativeSelectStream(ObjectValue client, String query,
-                                      ArrayValue parameters) {
+                                            ArrayValue parameters) {
         SQLDatasource sqlDatasource = (SQLDatasource) client.getNativeData(Constants.JDBC_CLIENT);
-        SQLStatement selectStatement = new SelectStatementStream(client, sqlDatasource, query, parameters, Scheduler.getStrand());
+        SQLStatement selectStatement = new SelectStatementStream(client, sqlDatasource, query, parameters,
+                Scheduler.getStrand());
         return selectStatement.execute();
     }
 

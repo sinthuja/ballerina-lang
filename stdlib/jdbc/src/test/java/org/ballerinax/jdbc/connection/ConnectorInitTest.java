@@ -53,98 +53,100 @@ public class ConnectorInitTest {
     @Test
     public void testSelectStream() {
         BRunUtil.invokeFunction(result, "testSelect2", args);
+        BRunUtil.invokeFunction(result, "testSelect3", args);
+        BRunUtil.invokeFunction(result, "testSelect4", args);
     }
 
-//    @Test
-//    public void testConnectorWithDefaultPropertiesForListedDB() {
-//         BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDefaultPropertiesForListedDB", args);
-//         final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//         Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test
-//    public void testConnectorWithWorkers() {
-//         BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithWorkers", args);
-//         final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//         Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test
-//    public void testConnectorWithDataSourceClass() {
-//        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDataSourceClass", args);
-//        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//        Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test
-//    public void testConnectorWithDataSourceClassAndProps() {
-//        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDataSourceClassAndProps", args);
-//        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//        Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test
-//    public void testConnectorWithDataSourceClassWithoutURL() {
-//        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDataSourceClassWithoutURL", args);
-//        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//        Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test
-//    public void testConnectorWithDataSourceClassURLPriority() {
-//        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDataSourceClassURLPriority", args);
-//        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//        Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test
-//    public void testConnectionPoolProperties1() {
-//        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectionPoolProperties1", args);
-//        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//        Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test
-//    public void testConnectionPoolProperties2() {
-//        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectionPoolProperties2", args);
-//        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//        Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test
-//    public void testConnectionPoolProperties3() {
-//        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectionPoolProperties3", args);
-//        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
-//        Assert.assertEquals(returns[0].stringValue(), expected);
-//    }
-//
-//    @Test(expectedExceptions = BLangRuntimeException.class,
-//          expectedExceptionsMessageRegExp =
-//                  ".*error in sql connector configuration: Failed to initialize pool: Database "
-//                  + "\".*/target/tempdb/NON_EXISTING_DB\" not found.*")
-//    public void testConnectionFailure() {
-//        String jdbcURL = "jdbc:h2:file:" + SQLDBUtils.DB_DIRECTORY + "NON_EXISTING_DB";
-//        BValue[] arg = { new BString(jdbcURL) };
-//        BRunUtil.invokeFunction(result, "testConnectionFailure", arg);
-//    }
-//
-//    @Test(expectedExceptions = BLangRuntimeException.class,
-//          expectedExceptionsMessageRegExp = ".*invalid JDBC URL: .*")
-//    public void testInvalidJdbcUrl1() {
-//        BRunUtil.invokeFunction(result, "testInvalidJdbcUrl1");
-//    }
-//
-//    @Test(expectedExceptions = BLangRuntimeException.class,
-//          expectedExceptionsMessageRegExp = ".*invalid JDBC URL: localhost:3306/testdb.*")
-//    public void testInvalidJdbcUrl2() {
-//        BRunUtil.invokeFunction(result, "testInvalidJdbcUrl2");
-//    }
-//
-//    @Test(expectedExceptions = BLangRuntimeException.class,
-//          expectedExceptionsMessageRegExp = ".*invalid JDBC URL: jdbc://dbhost.com/testdb.*")
-//    public void testInvalidJdbcUrl3() {
-//        BRunUtil.invokeFunction(result, "testInvalidJdbcUrl3");
-//    }
+    @Test
+    public void testConnectorWithDefaultPropertiesForListedDB() {
+         BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDefaultPropertiesForListedDB", args);
+         final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+         Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test
+    public void testConnectorWithWorkers() {
+         BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithWorkers", args);
+         final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+         Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test
+    public void testConnectorWithDataSourceClass() {
+        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDataSourceClass", args);
+        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+        Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test
+    public void testConnectorWithDataSourceClassAndProps() {
+        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDataSourceClassAndProps", args);
+        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+        Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test
+    public void testConnectorWithDataSourceClassWithoutURL() {
+        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDataSourceClassWithoutURL", args);
+        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+        Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test
+    public void testConnectorWithDataSourceClassURLPriority() {
+        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectorWithDataSourceClassURLPriority", args);
+        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+        Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test
+    public void testConnectionPoolProperties1() {
+        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectionPoolProperties1", args);
+        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+        Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test
+    public void testConnectionPoolProperties2() {
+        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectionPoolProperties2", args);
+        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+        Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test
+    public void testConnectionPoolProperties3() {
+        BValue[] returns = BRunUtil.invokeFunction(result, "testConnectionPoolProperties3", args);
+        final String expected = "[{\"FIRSTNAME\":\"Peter\"}]";
+        Assert.assertEquals(returns[0].stringValue(), expected);
+    }
+
+    @Test(expectedExceptions = BLangRuntimeException.class,
+          expectedExceptionsMessageRegExp =
+                  ".*error in sql connector configuration: Failed to initialize pool: Database "
+                  + "\".*/target/tempdb/NON_EXISTING_DB\" not found.*")
+    public void testConnectionFailure() {
+        String jdbcURL = "jdbc:h2:file:" + SQLDBUtils.DB_DIRECTORY + "NON_EXISTING_DB";
+        BValue[] arg = { new BString(jdbcURL) };
+        BRunUtil.invokeFunction(result, "testConnectionFailure", arg);
+    }
+
+    @Test(expectedExceptions = BLangRuntimeException.class,
+          expectedExceptionsMessageRegExp = ".*invalid JDBC URL: .*")
+    public void testInvalidJdbcUrl1() {
+        BRunUtil.invokeFunction(result, "testInvalidJdbcUrl1");
+    }
+
+    @Test(expectedExceptions = BLangRuntimeException.class,
+          expectedExceptionsMessageRegExp = ".*invalid JDBC URL: localhost:3306/testdb.*")
+    public void testInvalidJdbcUrl2() {
+        BRunUtil.invokeFunction(result, "testInvalidJdbcUrl2");
+    }
+
+    @Test(expectedExceptions = BLangRuntimeException.class,
+          expectedExceptionsMessageRegExp = ".*invalid JDBC URL: jdbc://dbhost.com/testdb.*")
+    public void testInvalidJdbcUrl3() {
+        BRunUtil.invokeFunction(result, "testInvalidJdbcUrl3");
+    }
 
     @AfterSuite
     public void cleanup() {
