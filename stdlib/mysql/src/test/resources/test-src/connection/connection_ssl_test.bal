@@ -14,6 +14,7 @@
 // under the License.
 
 import ballerinax/mysql;
+import ballerinax/sql;
 
 function testWithVerifyCert(string hostname, int port, string user, string pw, string db) returns boolean {
     mysql:Options opt = {
@@ -29,14 +30,27 @@ function testWithVerifyCert(string hostname, int port, string user, string pw, s
             }
         }
     };
-    mysql:Client testDB = new ({
-            host: hostname,
-            port: port,
-            username: user,
-            password: pw,
-            database: db,
-            options: opt
-    });
+    mysql:Client testDB = new (
+            host= hostname,
+            port= port,
+            username=user,
+            password= pw,
+            database=db,
+            options = opt);
+
+    var dt = testDB->select("SELECT * FROM Customers", ());
+    boolean success = false;
+    if (dt is table<record {}>) {
+        success = true;
+    }
+    checkpanic testDB.close();
+    return success;
+}
+
+function testWithPool(string hostname, int port, string user, string pw, string db) returns boolean {
+    sql:PoolOptions pool = {};
+    mysql:Client testDB = new ();
+
     var dt = testDB->select("SELECT * FROM Customers", ());
     boolean success = false;
     if (dt is table<record {}>) {
@@ -53,14 +67,14 @@ function testWithPreferredSSL(string hostname, int port, string user, string pw,
         },
         readWriteTimeoutInSeconds: 60
     };
-    mysql:Client testDB = new ({
-            host: hostname,
-            port: port,
-            username: user,
-            password: pw,
-            database: db,
-            options: opt
-    });
+    mysql:Client testDB = new (
+            host= hostname,
+            port= port,
+            username=user,
+            password=pw,
+            database=db,
+            options=opt
+    );
     var dt = testDB->select("SELECT * FROM Customers", ());
     boolean success = false;
     if (dt is table<record {}>) {
@@ -70,20 +84,40 @@ function testWithPreferredSSL(string hostname, int port, string user, string pw,
     return success;
 }
 
+function test2(string hostname, int port, string user, string pw, string db) returns boolean {
+    mysql:Options opt = {
+        ssl: {
+            mode: "PREFERRED"
+        },
+        readWriteTimeoutInSeconds: 60
+    };
+    mysql:Client testDB = new (
+            host= hostname
+    );
+    var dt = testDB->select("SELECT * FROM Customers", ());
+    boolean success = false;
+    if (dt is table<record {}>) {
+        success = true;
+    }
+    checkpanic testDB.close();
+    return success;
+}
+
+
 function testWithRequiredSSL(string hostname, int port, string user, string pw, string db) returns boolean {
     mysql:Options opt = {
         ssl: {
             mode: "REQUIRED"
         }
     };
-    mysql:Client testDB = new ({
-            host: hostname,
-            port: port,
-            username: user,
-            password: pw,
-            database: db,
-            options: opt
-    });
+    mysql:Client testDB = new (
+            host= hostname,
+            port=port,
+            username= user,
+            password=pw,
+            database= db,
+            options=opt
+    );
     var dt = testDB->select("SELECT * FROM Customers", ());
     boolean success = false;
     if (dt is table<record {}>) {

@@ -20,9 +20,24 @@ import ballerinax/java.jdbc;
 
 public type Client client object {
     *sql:Client;
-    jdbc:Client jdbcClient;
+    jdbc:Client jdbcClient = new ({
+         url: "jdbc:mysql://localhost:3306/CONNECT_DB",
+         username: "root",
+         password: "Test@123"
+    });
+    Options? options = ();
+    sql:PoolOptions? poolOptions = ();
 
-    public function __init(ClientConfiguration clientConfig){
+    public function __init(public string host="localhost", public int port=3306,
+        public string? username = (), public string? password= (), public string? database = (),
+        public Options? options = (), public sql:PoolOptions? connectionPool = ()){
+        ClientConfiguration clientConfig = {
+            host: host,
+            port :3306,
+            username: "",
+            password: "",
+            database: ""
+        };
         string jdbcMySQL = "jdbc:mysql://"+clientConfig.host+":"+clientConfig.port.toString()+"/"+clientConfig.database;
         map<anydata> jdbcOptions = getJdbcOptions(clientConfig.options);
         sql:PoolOptions? poolOps = clientConfig?.poolOptions;
@@ -43,6 +58,36 @@ public type Client client object {
           });
        }
     }
+
+    //public function __init(public string host="localhost", public int? port=3306, public string? username = (),
+    //                       public string? password= (), public string? database = (), public Options? options = (),
+    //                       public sql:PoolOptions? connectionPool = ()){
+    //
+    //      string jdbcMySQL = "jdbc:mysql://"+host+":"+port.toString();
+    //          map<anydata> jdbcOptions = {};
+    //          //self.jdbcClient = new ({
+    //          //                    url: jdbcMySQL,
+    //          //                    username: "root",
+    //          //                    password: "Test@123"
+    //          //                    });
+    //
+    //         // if(poolOps is sql:PoolOptions){
+    //         //    self.jdbcClient = new ({
+    //         //       url: jdbcMySQL,
+    //         //       username: username,
+    //         //       password: password,
+    //         //       dbOptions: jdbcOptions,
+    //         //       poolOptions: getJdbcPoolOptions(poolOps)
+    //         //    });
+    //         // } else {
+    //         //    self.jdbcClient = new ({
+    //         //       url: jdbcMySQL,
+    //         //       username: clientConfig.username,
+    //         //       password: clientConfig.password,
+    //         //       dbOptions: jdbcOptions
+    //         //   });
+    //         //}
+    // }
 
     # The call remote function implementation for JDBC Client to invoke stored procedures/functions.
     #
@@ -112,7 +157,7 @@ function getJdbcOptions(Options options) returns map<anydata>{
      return jdbcOptions;
 }
 
-function getJdbcPoolOptions(sql:PoolOptions poolOptions) returns jdbc:PoolOptions {
+function getJdbcPoolOptions(sql:PoolOptions? poolOptions) returns jdbc:PoolOptions {
      jdbc:PoolOptions jdbcPool = {};
     //todo: set all props from sqlPoolOptions to jdbc Pooloptions
      return jdbcPool;
